@@ -25,6 +25,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Register"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.geo_business.Register"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

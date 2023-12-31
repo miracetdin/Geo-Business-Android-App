@@ -44,8 +44,8 @@ public class Login extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getApplicationContext(), Register.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), Register.class);
+                startActivity(intent);
                 Toast.makeText(Login.this, "REGISTER SAYFA", Toast.LENGTH_SHORT).show();
             }
         });
