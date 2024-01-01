@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.api_requests.LoginApiRequest;
 import com.example.models.User;
+import com.example.shared_data.UserData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,9 +103,10 @@ public class Login extends AppCompatActivity {
                                 );
 
                                 Toast.makeText(Login.this, "Welcome "+user.getName()+" "+user.getSurname(), Toast.LENGTH_SHORT).show();
+                                UserData.getInstance().setSharedData(user);
 
-                                // Intent intent = new Intent(this, ProfileActivity.class);
-                                // startActivity(intent);
+                                Intent intent = new Intent(getApplicationContext(), Profile.class);
+                                startActivity(intent);
                             } else {
                                 Toast.makeText(Login.this, "Accountants cannot log in to the Employees' Mobile App!", Toast.LENGTH_SHORT).show();
                             }

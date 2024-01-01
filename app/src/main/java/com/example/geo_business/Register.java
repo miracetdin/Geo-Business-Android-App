@@ -1,5 +1,6 @@
 package com.example.geo_business;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -114,8 +115,8 @@ public class Register extends AppCompatActivity {
 
                                     Toast.makeText(Register.this, "Welcome "+user.getName()+" "+user.getSurname(), Toast.LENGTH_SHORT).show();
 
-                                    // Intent intent = new Intent(this, ProfileActivity.class);
-                                    // startActivity(intent);
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(Register.this, "Accountants cannot log in to the Employees' Mobile App!", Toast.LENGTH_SHORT).show();
                                 }
