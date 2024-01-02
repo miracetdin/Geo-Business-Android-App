@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.api_requests.LoginApiRequest;
 import com.example.models.User;
+import com.example.shared_data.TokenData;
 import com.example.shared_data.UserData;
 
 import org.json.JSONException;
@@ -89,6 +90,10 @@ public class Login extends AppCompatActivity {
                                 String accessToken = jsonResponse.getString("accessToken");
                                 String refreshToken = jsonResponse.getString("refreshToken");
 
+                                String[] tokens = {accessToken, refreshToken};
+
+                                TokenData.getInstance().setSharedData(tokens);
+
                                 // get "user" object
                                 JSONObject userObject = jsonResponse.getJSONObject("user");
 
@@ -118,7 +123,7 @@ public class Login extends AppCompatActivity {
                     }
                 }
             });
-            loginApiRequest.execute(apiUrl, jsonParams.toString());
+            loginApiRequest.execute(apiUrl, jsonParams.toString(), "POST");
         } else {
             Toast.makeText(Login.this, "Form entries cannot be blank!", Toast.LENGTH_SHORT).show();
         }

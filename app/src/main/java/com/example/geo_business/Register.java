@@ -128,7 +128,7 @@ public class Register extends AppCompatActivity {
                         }
                     }
                 });
-                loginApiRequest.execute(apiUrl, jsonParams.toString());
+                loginApiRequest.execute(apiUrl, jsonParams.toString(), "POST");
             }
             else {
                 Toast.makeText(Register.this, "Şifreler uyuşmuyor!", Toast.LENGTH_SHORT).show();

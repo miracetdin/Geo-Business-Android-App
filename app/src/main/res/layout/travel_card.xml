@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardElevation="20dp"
+    card_view:cardCornerRadius="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:backgroundTint="@color/yellow"
+    tools:ignore="MissingClass">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white">
+
+        <ImageView
+            android:id="@+id/travel_iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/travel_tv_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_iv_photo"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_id"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textStart"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_travelDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_username"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_startLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_travelDate"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_endLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_startLocation"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_invoiceInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_endLocation"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+
+        <TextView
+            android:id="@+id/travel_tv_invoiceNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_invoiceInfo"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_invoicePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_invoiceNote"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_priceEstimate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_invoicePrice"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_suspicious"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_priceEstimate"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_suspicious"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_approveByAccountant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_status"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+        <TextView
+            android:id="@+id/travel_tv_approveDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_tv_approveByAccountant"
+            android:layout_marginTop="20dp"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray"/>
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>
