@@ -48,7 +48,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Register.class);
                 startActivity(intent);
-                Toast.makeText(Login.this, "REGISTER SAYFA", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -110,7 +109,7 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "Welcome "+user.getName()+" "+user.getSurname(), Toast.LENGTH_SHORT).show();
                                 UserData.getInstance().setSharedData(user);
 
-                                Intent intent = new Intent(getApplicationContext(), Profile.class);
+                                Intent intent = new Intent(getApplicationContext(), Menu.class);
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(Login.this, "Accountants cannot log in to the Employees' Mobile App!", Toast.LENGTH_SHORT).show();

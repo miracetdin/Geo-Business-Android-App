@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow"
+    tools:ignore="ExtraText">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu_tv_welcome"
+        android:text="Welcome!"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:textSize="25dp"/>
+
+
+    <TextView
+        android:id="@+id/menu_tv_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/menu_tv_welcome"
+        android:layout_centerHorizontal="true"
+        android:hint="Loading"/>
+
+
+
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:id="@+id/menu_bt_profile"
+        android:layout_marginTop="300dp"
+        android:layout_marginLeft="130dp"
+        android:text="Profile"
+        android:textSize="20dp"/>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:id="@+id/menu_bt_travels"
+        android:layout_below="@id/menu_bt_profile"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="130dp"
+        android:text="History"
+        android:textSize="20dp"/>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:id="@+id/menu_bt_create"
+        android:layout_below="@id/menu_bt_travels"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="130dp"
+        android:text="Make a Trip!"
+        android:textSize="18dp"/>
+
+
+</RelativeLayout>
