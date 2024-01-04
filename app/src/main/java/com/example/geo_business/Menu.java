@@ -29,7 +29,8 @@ public class Menu extends AppCompatActivity {
         viewTravels = (Button) findViewById(R.id.menu_bt_travels);
 
         User user = UserData.getInstance().getSharedData();
-        userName.setText(user.getName()+" "+user.getSurname());
+        String name = user.getName() + " " + user.getSurname();
+        userName.setText(name);
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,8 +43,8 @@ public class Menu extends AppCompatActivity {
         createTravel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent intent = new Intent(getApplicationContext(), NewTravel.class);
-                // startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), Map.class);
+                startActivity(intent);
             }
         });
 
