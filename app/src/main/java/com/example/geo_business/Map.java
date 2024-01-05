@@ -11,6 +11,9 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +58,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     GoogleMap map;
     double userLat, userLong;
     private LatLng destinationLocation, userLocation;
+    Button startButton, endButton;
+    TextView info;
+    private boolean isTravelStarted;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +73,33 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        startButton = (Button) findViewById(R.id.startButton);
+        endButton = (Button) findViewById(R.id.endButton);
+        info = (TextView) findViewById(R.id.info);
+
+        endButton.setVisibility(View.INVISIBLE);
+        info.setVisibility(View.INVISIBLE);
+
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isTravelStarted = true;
+                startButton.setVisibility(View.INVISIBLE);
+                endButton.setVisibility(View.VISIBLE);
+                info.setVisibility(View.VISIBLE);
+            }
+        });
+
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isTravelStarted = false;
+                startButton.setVisibility(View.VISIBLE);
+                endButton.setVisibility(View.INVISIBLE);
+                info.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
@@ -82,14 +115,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
-                map.clear();
-                destinationLocation = latLng;
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.icon(setIcon(Map.this, R.drawable.lock_black_24dp));
-                map.addMarker(markerOptions);
+                if(!isTravelStarted) {
+                    map.clear();
+                    destinationLocation = latLng;
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.icon(setIcon(Map.this, R.drawable.lock_black_24dp));
+                    map.addMarker(markerOptions);
 
-                getRoute(userLocation, destinationLocation);
+                    getRoute(userLocation, destinationLocation);
+                }
             }
         });
 
@@ -205,6 +240,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             // Toast mesajını oluştur ve göster
             String toastMessage = "Mesafe: " + distanceText;
             Toast.makeText(Map.this, toastMessage, Toast.LENGTH_SHORT).show();
+            info.setText("Distance: " + distanceText);
 
             // Harita üzerinde çizgi çiz
             drawPolylineOnMap(result);
