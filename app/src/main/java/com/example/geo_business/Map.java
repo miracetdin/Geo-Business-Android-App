@@ -2,14 +2,18 @@ package com.example.geo_business;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,18 +49,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int MAP_PERMISSION_CODE = 101;
+    public static final int CAMERA_PERM_CODE = 102;
+    public static final int CAMERA_REQUEST_CODE = 103;
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
     double userLat, userLong;
@@ -62,6 +73,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     Button startButton, endButton;
     TextView info;
     private boolean isTravelStarted;
+    String currentPhotoPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +111,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 startButton.setVisibility(View.VISIBLE);
                 endButton.setVisibility(View.INVISIBLE);
                 info.setVisibility(View.INVISIBLE);
+                verifyCameraPermisson();
             }
         });
     }
@@ -348,6 +361,74 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
             }
         });
+    }
+
+    public void verifyCameraPermisson() {
+        String[] permissions = {
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA
+        };
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("Kamera" , "İzin alındı");
+            dispatchTakePictureIntent();
+        }
+        else {
+            Log.d("Kamera" , "İzin alınamadıdı");
+            ActivityCompat.requestPermissions(this, permissions, CAMERA_PERM_CODE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == CAMERA_PERM_CODE) {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                dispatchTakePictureIntent();
+            }else {
+                Toast.makeText(this, "Kamerayı kullanmak için izin gerekmektedir!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+        Log.d("Kamera" , "1");
+        Intent takePıctureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.d("Kamera" , "2");
+        if(takePıctureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+
+            try {
+                Log.d("Kamera" , "3");
+                photoFile = createImageFile();
+            }
+            catch (IOException exception) {
+                Toast.makeText(this, "Fotoğraf dosyası oluşturulamadı!", Toast.LENGTH_SHORT).show();
+            }
+
+            if(photoFile != null) {
+                Log.d("Kamera" , "4");
+                Uri photoUri = FileProvider.getUriForFile(this, "com.example.geo_business", photoFile);
+                takePıctureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                Log.d("Kamera" , "5");
+                startActivityForResult(takePıctureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "Geo_Business_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        currentPhotoPath = image.getAbsolutePath();
+
+        return image;
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {
