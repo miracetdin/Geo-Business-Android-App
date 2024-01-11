@@ -54,6 +54,7 @@ import java.util.List;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final int MAP_PERMISSION_CODE = 101;
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
     double userLat, userLong;
@@ -107,6 +108,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         map = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // İzin yoksa izin talebi yap
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_CODE);
             return;
         }
         map.setMyLocationEnabled(true);
