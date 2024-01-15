@@ -31,6 +31,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 
+import com.example.adapters.TravelAdapter;
+import com.example.api_requests.CityApiRequest;
+import com.example.api_requests.TravelsApiRequest;
+import com.example.models.Travel;
+import com.example.models.User;
+import com.example.shared_data.TokenData;
+import com.example.shared_data.UserData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,6 +73,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
@@ -73,6 +82,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     private static final int MAP_PERMISSION_CODE = 101;
     public static final int CAMERA_PERM_CODE = 102;
     public static final int CAMERA_REQUEST_CODE = 103;
+    private static final String TAG = "MapActivity";
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
     double userLat, userLong;
@@ -81,6 +91,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     TextView info;
     private boolean isTravelStarted;
     static String currentPhotoPath;
+    static String currentCity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,6 +227,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
+            Log.d("Konum api response:", jsonResponse.toString());
+
             // "routes" dizisinden ilk rota al
             JSONArray routesArray = null;
             try {
@@ -244,6 +257,22 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
+            // Başlangıç noktasını içeren "start_address" alanını al
+            String startAddress = null;
+            try {
+                startAddress = firstLeg.getString("start_address");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Başlangıç noktasını kullanarak bir şeyler yapabilirsiniz
+            // Örneğin, bir Toast mesajı göstermek:
+            Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
+            Log.d("Başlangıç Şehri:", startAddress);
+            String city = extractCity(startAddress);
+            System.out.println("Şehir: " + city);
+            currentCity = city;
+
             // İlk bacak içinden "distance" alanını al
             JSONObject distanceObject = null;
             try {
@@ -268,6 +297,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             // Harita üzerinde çizgi çiz
             drawPolylineOnMap(result);
         }
+    }
+
+    private static String extractCity(String address) {
+        // Örnek regex deseni
+        Pattern pattern = Pattern.compile("(\\w+/\\w+),");
+        Matcher matcher = pattern.matcher(address);
+
+        if (matcher.find()) {
+            // İlk eşleşen kısmı al (Çukurova/Adana)
+            String cityPart = matcher.group(1);
+
+            // / işaretine göre bölerek şehir ismini al
+            String[] parts = cityPart.split("/");
+            if (parts.length > 1) {
+                return parts[1].trim();
+            }
+        }
+
+        return null; // Eşleşme bulunamazsa null döndürülebilir
     }
 
     private void drawPolylineOnMap(String result) {
@@ -531,6 +579,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             // Do something with the recognized text, for example, display it in a TextView
             Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
             Log.d("OCR Result: ", recognizedText);
+            getCity();
             // You can also use recognizedText for further processing or store it in a variable.
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
@@ -570,6 +619,63 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getCity() {
+        // create JSON Object with username and password
+        JSONObject jsonParams = new JSONObject();
+
+        // Map<String, String> params = new HashMap<>();
+        // params.put("page", page);
+
+        // Map<String, String> headers = new HashMap<>();
+        // headers.put("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g");
+
+        // String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g";
+
+        String[] tokens = TokenData.getInstance().getSharedData();
+        String accessToken = tokens[0];
+        Log.e(TAG, "Access Token: " + accessToken);
+        // String city = "Adana";
+
+        // API request
+        String apiUrl = "http://192.168.1.54:4000/fee/"+currentCity;
+        CityApiRequest cityApiRequest = new CityApiRequest(new CityApiRequest.ApiCallback() {
+            @Override
+            public void onTaskComplete(String result) {
+
+                Log.d(TAG, "API Response: " + result);
+
+                try {
+                    // Transform JSON response to JSON Array
+                    JSONObject jsonResponse = new JSONObject(result);
+                    Log.d(TAG, "jsonResponse: " + jsonResponse);
+                    Log.d(TAG, "jsonResponseLength: " + jsonResponse.length());
+
+                    if (jsonResponse.has("error")) {
+                        // Login error
+                        Toast.makeText(Map.this, "Error!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Login successfully
+                        String city = jsonResponse.getString("city");
+                        String openingFee = jsonResponse.getString("openingFee");
+                        String feePerKm = jsonResponse.getString("feePerKm");
+
+
+
+                            Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
+                            Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "JSON Parsing Error: " + e.getMessage());
+                    Toast.makeText(Map.this, "HATA!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        cityApiRequest.execute(apiUrl, "GET", currentCity, accessToken);
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {
