@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.telecom.Call;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -76,6 +77,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Callback;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.MediaType;
+
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -91,6 +100,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     TextView info;
     private boolean isTravelStarted;
     static String currentPhotoPath;
+    static String currentPhotoName;
     static String currentCity;
 
     @Override
@@ -484,6 +494,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         currentPhotoPath = image.getAbsolutePath();
+        currentPhotoName = imageFileName;
 
         return image;
     }
@@ -580,6 +591,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
             Log.d("OCR Result: ", recognizedText);
             getCity();
+            saveImageToServer(new File(currentPhotoPath));
             // You can also use recognizedText for further processing or store it in a variable.
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
@@ -676,6 +688,43 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
         cityApiRequest.execute(apiUrl, "GET", currentCity, accessToken);
+    }
+
+    private void saveImageToServer(File file) {
+        // File'ı sunucuya gönderme işlemini gerçekleştirebilirsiniz.
+        // Burada HttpClient, Retrofit, veya diğer HTTP kütüphanelerini kullanabilirsiniz.
+        // Örnek bir HTTP POST request kullanımı:
+
+        Log.d("Kayıt", "1");
+
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("photo", currentPhotoName+".jpg",
+                        RequestBody.create(MediaType.parse("image/*"), file))
+                .build();
+        Log.d("Kayıt", "2");
+        Request request = new Request.Builder()
+                .url("http://192.168.1.54:4000/upload")
+                .post(requestBody)
+                .build();
+        Log.d("Kayıt", "3");
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Sunucu yanıtını burada işleyebilirsiniz.
+                    String responseData = response.body().string();
+                    Log.d("Server Response", responseData);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {
