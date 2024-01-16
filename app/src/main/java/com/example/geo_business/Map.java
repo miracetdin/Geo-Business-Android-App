@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider;
 
 import com.example.adapters.TravelAdapter;
 import com.example.api_requests.CityApiRequest;
+import com.example.api_requests.CreateTravelApiRequest;
 import com.example.api_requests.TravelsApiRequest;
 import com.example.models.Travel;
 import com.example.models.User;
@@ -54,6 +55,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.gson.Gson;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import org.json.JSONArray;
@@ -71,6 +73,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,6 +106,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     static String currentPhotoPath;
     static String currentPhotoName;
     static String currentCity;
+    static String startLocation;
+    static String endLocation;
+    static String photoLink;
+
+    static String travelDistance;
+    static Float invoicePrice;
+
+    static Float priceEstimate;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -275,6 +288,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
+            String endAddress = null;
+            try {
+                endAddress = firstLeg.getString("end_address");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
             // Başlangıç noktasını kullanarak bir şeyler yapabilirsiniz
             // Örneğin, bir Toast mesajı göstermek:
             Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
@@ -282,6 +302,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             String city = extractCity(startAddress);
             System.out.println("Şehir: " + city);
             currentCity = city;
+            startLocation = startAddress;
+            endLocation = endAddress;
 
             // İlk bacak içinden "distance" alanını al
             JSONObject distanceObject = null;
@@ -303,6 +325,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             String toastMessage = "Mesafe: " + distanceText;
             Toast.makeText(Map.this, toastMessage, Toast.LENGTH_SHORT).show();
             info.setText("Distance: " + distanceText);
+
+            // String distanceText = "10.6 km";
+
+            // Sayısal değeri çıkarmak için regex
+            String regex = "[0-9]+\\.*[0-9]*";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(distanceText);
+
+            // Eşleşen değeri bulma
+            if (matcher.find()) {
+                String matchedValue = matcher.group(); // Eşleşen tam sayısal değeri içerir
+                System.out.println("Distance: " + matchedValue);
+                travelDistance = matchedValue;
+            }
 
             // Harita üzerinde çizgi çiz
             drawPolylineOnMap(result);
@@ -590,8 +626,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             // Do something with the recognized text, for example, display it in a TextView
             Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
             Log.d("OCR Result: ", recognizedText);
+
+            // String exampleText = "Tutar 10, Top 20.50, Toplam: 30.75, Tutar: 10.55, Top: *10.55";
+
+            // Fatura fiyatını tespit etmek için regex
+            String regex = "(?i)(?:Tutar|Top|Toplam)\\s*(?::|)\\s*[*]*\\s*([\\d,.]+)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(recognizedText);
+
+            // Eşleşen değerleri bulma
+            while (matcher.find()) {
+                String matchedValue = matcher.group(1); // Grup 1, sayısal değeri içerir
+                // Burada matchedValue değerini kullanabilirsiniz
+                System.out.println("Fatura Fiyatı: " + matchedValue);
+                invoicePrice = Float.valueOf(matchedValue);
+            }
+
             getCity();
             saveImageToServer(new File(currentPhotoPath));
+            // setTravelData();
             // You can also use recognizedText for further processing or store it in a variable.
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
@@ -673,7 +726,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                         String openingFee = jsonResponse.getString("openingFee");
                         String feePerKm = jsonResponse.getString("feePerKm");
 
-
+                        priceEstimate = Float.valueOf(openingFee) + Float.valueOf(travelDistance) * Float.valueOf(feePerKm);
 
                             Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
                             Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
@@ -716,6 +769,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                     // Sunucu yanıtını burada işleyebilirsiniz.
                     String responseData = response.body().string();
                     Log.d("Server Response", responseData);
+
+                    // Assuming `responseData` contains the JSON response
+                    try {
+                        JSONObject json = new JSONObject(responseData);
+                        photoLink = json.getString("fileLink");
+                        Log.d("Server Response", "File Link: " + photoLink);
+
+                        setTravelData();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("Server Response", "Error parsing JSON: " + e.getMessage());
+                    }
                 }
             }
 
@@ -725,6 +790,95 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
 
         });
+    }
+
+    /*
+    public void setTravelData() {
+        User user = UserData.getInstance().getSharedData();
+        String employeeUsername = user.getUsername();
+
+        // Tarih formatını belirle
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        // Tarihi metin olarak temsil eden bir String
+        String dateString = "12/23/2023";
+        // String'i LocalDate nesnesine çevir
+        LocalDate travelDate = LocalDate.parse(dateString, formatter);
+
+        // startLocation;
+        // endLocation;
+        // photoLink;
+
+    }
+
+
+     */
+    public void setTravelData() {
+
+        User user = UserData.getInstance().getSharedData();
+        String employeeUsername = user.getUsername();
+
+        // Bugünün tarihini al
+        LocalDate today = LocalDate.now();
+        // Tarih formatını belirle
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        // Tarihi metin olarak temsil eden bir String
+        //String dateString = "12/23/2023";
+        // String'i LocalDate nesnesine çevir
+        //LocalDate travelDate = LocalDate.parse(dateString, formatter);
+        // Tarihi belirlenen formata çevir
+        String travelDate = today.format(formatter);
+
+
+        String suspicious = "yes";
+
+        if((invoicePrice != null) && (priceEstimate != null)) {
+            if (invoicePrice > priceEstimate * 1.25) {
+                suspicious = "yes";
+            }
+            else {
+                suspicious = "no";
+            }
+        }
+
+        String invoicePhoto = photoLink;
+        String invoiceInfo = travelDistance;
+
+
+        String status = "waiting";
+        String approveByAccountant = null;
+        String approveDate = null;
+
+
+        Travel travel = new Travel(
+                employeeUsername, travelDate.toString(), startLocation, endLocation, invoicePhoto, invoiceInfo,
+                "note", invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate
+        );
+
+        Log.d("test", travel.toString());
+
+        Gson gson = new Gson();
+        String body =  gson.toJson(travel);
+
+        Log.d("body içerik: ", body);
+
+        // create JSON Object with username and password
+        JSONObject jsonParams = new JSONObject();
+
+        String[] tokens = TokenData.getInstance().getSharedData();
+        String accessToken = tokens[0];
+        Log.e(TAG, "Access Token: " + accessToken);
+
+        // API request
+        String apiUrl = "http://192.168.1.54:4000/travel/";
+        CreateTravelApiRequest createTravelApiRequest = new CreateTravelApiRequest(new CreateTravelApiRequest.ApiCallback() {
+            @Override
+            public void onTaskComplete(String result) {
+
+                Log.d(TAG, "API Response: " + result);
+
+            }
+        });
+        createTravelApiRequest.execute(apiUrl, body, accessToken);
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {

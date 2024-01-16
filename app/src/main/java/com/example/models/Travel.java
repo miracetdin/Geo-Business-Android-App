@@ -3,7 +3,7 @@ package com.example.models;
 public class Travel {
 
     private String id;
-    private String username;
+    private String employeeUsername;
     private String travelDate;
     private String startLocation;
     private String endLocation;
@@ -17,12 +17,31 @@ public class Travel {
     private String approveByAccountant;
     private String approveDate;
 
-    public Travel(String id, String username, String travelDate, String startLocation,
+    public Travel(String id, String employeeUsername, String travelDate, String startLocation,
                   String endLocation, String invoicePhoto, String invoiceInfo, String invoiceNote,
                   Float invoicePrice, Float priceEstimate, String suspicious, String status,
                   String approveByAccountant, String approveDate) {
         this.id = id;
-        this.username = username;
+        this.employeeUsername = employeeUsername;
+        this.travelDate = travelDate;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.invoicePhoto = invoicePhoto;
+        this.invoiceInfo = invoiceInfo;
+        this.invoiceNote = invoiceNote;
+        this.invoicePrice = invoicePrice;
+        this.priceEstimate = priceEstimate;
+        this.suspicious = suspicious;
+        this.status = status;
+        this.approveByAccountant = approveByAccountant;
+        this.approveDate = approveDate;
+    }
+
+    public Travel(String employeeUsername, String travelDate, String startLocation,
+                  String endLocation, String invoicePhoto, String invoiceInfo, String invoiceNote,
+                  Float invoicePrice, Float priceEstimate, String suspicious, String status,
+                  String approveByAccountant, String approveDate) {
+        this.employeeUsername = employeeUsername;
         this.travelDate = travelDate;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
@@ -46,11 +65,11 @@ public class Travel {
     }
 
     public String getUsername() {
-        return username;
+        return employeeUsername;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.employeeUsername = employeeUsername;
     }
 
     public String getTravelDate() {
@@ -147,5 +166,25 @@ public class Travel {
 
     public void setApproveDate(String approveDate) {
         this.approveDate = approveDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Travel{" +
+                "id='" + id + '\'' +
+                ", employeeUsername='" + employeeUsername + '\'' +
+                ", travelDate='" + travelDate + '\'' +
+                ", startLocation='" + startLocation + '\'' +
+                ", endLocation='" + endLocation + '\'' +
+                ", invoicePhoto='" + invoicePhoto + '\'' +
+                ", invoiceInfo='" + invoiceInfo + '\'' +
+                ", invoiceNote='" + invoiceNote + '\'' +
+                ", invoicePrice=" + invoicePrice +
+                ", priceEstimate=" + priceEstimate +
+                ", suspicious='" + suspicious + '\'' +
+                ", status='" + status + '\'' +
+                ", approveByAccountant='" + approveByAccountant + '\'' +
+                ", approveDate='" + approveDate + '\'' +
+                '}';
     }
 }
