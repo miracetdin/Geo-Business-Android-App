@@ -850,7 +850,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
 
         Travel travel = new Travel(
-                employeeUsername, travelDate.toString(), startLocation, endLocation, invoicePhoto, invoiceInfo,
+                employeeUsername, travelDate.toString(), startLocation, endLocation, invoicePhoto, invoiceInfo+" km",
                 "note", invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate
         );
 
