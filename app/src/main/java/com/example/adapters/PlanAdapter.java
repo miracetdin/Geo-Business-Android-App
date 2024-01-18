@@ -15,7 +15,21 @@ import com.example.geo_business.R;
 
 import java.util.ArrayList;
 
+
+
+
 public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public interface OnItemClickListener {
+        void onItemClick(Plan plan);
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+
 
     private ArrayList<Plan> planList;
     private Context planContext;
@@ -64,6 +78,15 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // Plan.Coordinates coordinates = plan.getCoordinates();
 
             ((PlanViewHolder) holder).accountantUsername.setText(plan.getAccountantUsername());
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(plan);
+                    }
+                }
+            });
         }
     }
 

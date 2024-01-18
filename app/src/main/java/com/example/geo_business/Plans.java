@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Plans extends AppCompatActivity {
+public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickListener {
 
     public static ArrayList<Plan> planList = new ArrayList<>();
     private static final String TAG = "PlansActivity";
@@ -30,6 +30,8 @@ public class Plans extends AppCompatActivity {
 
     private String id, employeeUsername, travelDate, endLocation, accountantUsername;
     private Float latitude, longitude;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class Plans extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(this); // 'this' aktiviteniz veya fragmentiniz ise
+
 
         viewPlans(adapter);
     }
@@ -129,5 +134,14 @@ public class Plans extends AppCompatActivity {
         // Make the API request
         planListApiRequest.execute(apiUrl, page, accessToken);
     }
+
+    @Override
+    public void onItemClick(Plan plan) {
+        // Tıklanan öğenin değerlerini burada günlüğe kaydedin
+        Log.d("Tıklanan Plan", plan.toString());
+        // Diğer ihtiyaç duyulan işlemleri gerçekleştirin
+    }
+
+
 
 }

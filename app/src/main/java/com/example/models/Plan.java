@@ -80,5 +80,16 @@ public class Plan {
             this.longtitude = longtitude;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Plan{" +
+                "employeeUsername='" + employeeUsername + '\'' +
+                ", travelDate='" + travelDate + '\'' +
+                ", endLocation='" + endLocation + '\'' +
+                ", coordinates=" + coordinates +
+                ", accountantUsername='" + accountantUsername + '\'' +
+                '}';
+    }
 }
 
