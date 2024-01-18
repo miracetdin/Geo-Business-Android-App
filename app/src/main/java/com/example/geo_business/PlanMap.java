@@ -38,6 +38,9 @@ import com.example.shared_data.PlanData;
 import com.example.shared_data.TokenData;
 import com.example.shared_data.UserData;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +49,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -85,15 +90,17 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
-
+    private LocationRequest locationRequest;
+    private com.google.android.gms.location.LocationCallback locationCallback;
+    Circle destinationCircle;
     private static final int MAP_PERMISSION_CODE = 101;
     public static final int CAMERA_PERM_CODE = 102;
     public static final int CAMERA_REQUEST_CODE = 103;
     private static final String TAG = "PlanMapActivity";
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
-    double userLat, userLong;
-    private LatLng destinationLocation, userLocation;
+    double userLat, userLong, curLat, curLong;
+    private LatLng destinationLocation, userLocation, currentLocation;
     Button startButton, endButton;
     TextView info;
     private boolean isTravelStarted;
@@ -129,6 +136,25 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Lokasyon talebi (request) ve callback'i başlat
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(5000); // Lokasyonu her 5 saniyede bir güncelle
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        locationCallback = new com.google.android.gms.location.LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult != null) {
+                    Location location = locationResult.getLastLocation();
+                    if (location != null) {
+                        // Güncellenmiş lokasyonu burada işleyin
+                        updateCurrentLocation(location);
+                    }
+                }
+            }
+        };
+
         startButton = (Button) findViewById(R.id.startButton);
         endButton = (Button) findViewById(R.id.endButton);
         info = (TextView) findViewById(R.id.info);
@@ -149,13 +175,68 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isTravelStarted = false;
-                startButton.setVisibility(View.VISIBLE);
-                endButton.setVisibility(View.INVISIBLE);
-                info.setVisibility(View.INVISIBLE);
-                verifyCameraPermisson();
+                // isUserInsideCircle metodunu kullanarak kontrol yap
+                Boolean inside =  isUserInsideCircle(currentLocation, destinationLocation, 100);
+
+                if (inside) {
+                    // Kullanıcı dairenin içinde
+                    Toast.makeText(PlanMap.this, "Kullanıcı dairenin içinde", Toast.LENGTH_SHORT).show();
+                    isTravelStarted = false;
+                    startButton.setVisibility(View.VISIBLE);
+                    endButton.setVisibility(View.INVISIBLE);
+                    info.setVisibility(View.INVISIBLE);
+                    verifyCameraPermisson();
+                } else {
+                    // Kullanıcı dairenin dışında
+                    Toast.makeText(PlanMap.this, "Kullanıcı dairenin dışında", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startLocationUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        }
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
+    // Güncellenmiş lokasyonu işlemek için metod
+    private void updateCurrentLocation(Location location) {
+        curLat = location.getLatitude();
+        curLong = location.getLongitude();
+
+        currentLocation = new LatLng(curLat, curLong);
+
+        // Haritayı güncelleyin veya yeni lokasyonla diğer işlemleri gerçekleştirin
+        // ...
+
+        /*
+        LatLng latLng = new LatLng(curLat, curLong);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(14).build();
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.addMarker(new MarkerOptions().position(latLng)
+                .icon(setIcon(Map.this, R.drawable.baseline_register_circle_24)));
+
+         */
     }
 
     @Override
@@ -245,6 +326,10 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             map.addMarker(markerOptions);
 
             getRoute(userLocation, destinationLocation);
+
+
+            // 100 metre yarıçaplı bir daire çiz
+            drawDestinationCircle(destinationLocation, 100);
         } else {
             Log.e("LatLng Conversion", "Invalid latitude or longitude values in the plan.");
             // Handle the case where latitude or longitude is null
@@ -272,6 +357,37 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         // For simplicity, you can use AsyncTask for demonstration purposes
         new PlanMap.FetchDirectionsTask().execute(url);
     }
+
+    private void drawDestinationCircle(LatLng center, double radius) {
+        if (destinationCircle != null) {
+            destinationCircle.remove(); // Daha önce çizilmiş bir daire varsa kaldır
+        }
+
+        CircleOptions circleOptions = new CircleOptions()
+                .center(center)
+                .radius(radius)
+                .strokeColor(Color.BLUE)
+                .strokeWidth(2)
+                .fillColor(Color.argb(70, 0, 0, 255)); // Yarı saydam mavi renkte bir dolgu
+
+        destinationCircle = map.addCircle(circleOptions);
+    }
+
+    private boolean isUserInsideCircle(LatLng currentLocation, LatLng circleCenter, double circleRadius) {
+        float[] distance = new float[1];
+
+        // Haversine formülü ile iki konum arasındaki mesafeyi hesapla
+        Location.distanceBetween(
+                currentLocation.latitude, currentLocation.longitude,
+                circleCenter.latitude, circleCenter.longitude,
+                distance
+        );
+
+        // Hesaplanan mesafeyi dairenin yarıçapı ile karşılaştır
+        return distance[0] <= circleRadius;
+    }
+
+
 
     private class FetchDirectionsTask extends AsyncTask<String, Void, String> {
         @Override
