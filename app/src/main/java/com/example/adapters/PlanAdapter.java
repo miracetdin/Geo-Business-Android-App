@@ -1,0 +1,82 @@
+package com.example.adapters;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.models.Plan;
+import com.example.geo_business.R;
+
+import java.util.ArrayList;
+
+public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private ArrayList<Plan> planList;
+    private Context planContext;
+
+    public static class PlanViewHolder extends RecyclerView.ViewHolder {
+
+        TextView employeeUsername, travelDate, endLocation, accountantUsername;
+
+        public PlanViewHolder(View view) {
+            super(view);
+
+            Log.d("plan deneme", "plan PlanViewHolder");
+
+            this.employeeUsername = view.findViewById(R.id.plan_tv_employeeUsername);
+            this.travelDate = view.findViewById(R.id.plan_tv_travelDate);
+            this.endLocation = view.findViewById(R.id.plan_tv_endLocation);
+            this.accountantUsername = view.findViewById(R.id.plan_tv_accountantUsername);
+        }
+    }
+
+    public PlanAdapter(ArrayList<Plan> dataSet, Context context) {
+        this.planList = dataSet;
+        this.planContext = context;
+    }
+
+
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.plan_card, parent, false);
+        return new PlanViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Plan plan = planList.get(position);
+
+        Log.d("plan deneme", "plan onBindViewHolder");
+        Log.d("plan deneme", plan.toString());
+
+        if (plan != null) {
+            ((PlanViewHolder) holder).employeeUsername.setText(plan.getEmployeeUsername());
+            ((PlanViewHolder) holder).travelDate.setText(plan.getTravelDate());
+            ((PlanViewHolder) holder).endLocation.setText(plan.getEndLocation());
+
+            // Plan.Coordinates coordinates = plan.getCoordinates();
+
+            ((PlanViewHolder) holder).accountantUsername.setText(plan.getAccountantUsername());
+        }
+    }
+
+    public void updateData(ArrayList<Plan> newPlanList) {
+
+        Log.d("plan deneme", "plan liste güncelle");
+        planList.clear();
+        planList.addAll(newPlanList);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return planList.size();
+    }
+}

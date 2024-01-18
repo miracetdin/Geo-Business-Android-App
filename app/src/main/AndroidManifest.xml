@@ -90,6 +90,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Plans"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.geo_business.Plans"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

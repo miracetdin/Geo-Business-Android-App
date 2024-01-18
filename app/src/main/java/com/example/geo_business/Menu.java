@@ -15,7 +15,7 @@ import com.example.shared_data.UserData;
 public class Menu extends AppCompatActivity {
 
     TextView userName;
-    Button profile, createTravel, viewTravels;
+    Button profile, createTravel, viewTravels, travelPlan;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,6 +27,7 @@ public class Menu extends AppCompatActivity {
         profile = (Button) findViewById(R.id.menu_bt_profile);
         createTravel = (Button) findViewById(R.id.menu_bt_create);
         viewTravels = (Button) findViewById(R.id.menu_bt_travels);
+        travelPlan = (Button) findViewById(R.id.menu_bt_plan);
 
         User user = UserData.getInstance().getSharedData();
         String name = user.getName() + " " + user.getSurname();
@@ -52,6 +53,14 @@ public class Menu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Travels.class);
+                startActivity(intent);
+            }
+        });
+
+        travelPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Plans.class);
                 startActivity(intent);
             }
         });
