@@ -30,6 +30,7 @@ import androidx.core.content.FileProvider;
 
 import com.example.api_requests.CityApiRequest;
 import com.example.api_requests.CreateTravelApiRequest;
+import com.example.api_requests.DeletePlanApiRequest;
 import com.example.models.Plan;
 import com.example.models.Travel;
 import com.example.models.User;
@@ -860,11 +861,36 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onTaskComplete(String result) {
 
+                System.out.println("kayıt işlemi başarılı");
                 Log.d(TAG, "API Response: " + result);
+
+                if(result != null && result.contains("saved")) {
+                    System.out.println("silme işlemine başladı");
+                    String apiUrl = "http://192.168.1.54:4000";
+                    String[] tokens = TokenData.getInstance().getSharedData();
+                    String accessToken = tokens[0];
+                    Log.e(TAG, "Access Token: " + accessToken);
+                    //String accessToken = a;
+                    String planId = plan.getId();
+                    Log.d("PLAN ID", planId);
+
+                    DeletePlanApiRequest deleteRequest = new DeletePlanApiRequest(new DeletePlanApiRequest.ApiCallback() {
+                        @Override
+                        public void onTaskComplete(String result) {
+                            // API isteği tamamlandığında burada işlemler yapabilirsiniz
+                            System.out.println("silme işlemi başarılı");
+                            System.out.println("Result: " + result);
+                        }
+                    });
+
+                    deleteRequest.execute(apiUrl, planId, accessToken);
+                }
 
             }
         });
         createTravelApiRequest.execute(apiUrl, body, accessToken);
+
+
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {

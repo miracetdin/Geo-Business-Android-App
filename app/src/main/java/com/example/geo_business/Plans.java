@@ -23,7 +23,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickListener {
 
@@ -90,6 +92,7 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
 
                             // Accessing the fields in the JSON object and assigning them to the class properties
                             id = jsonObject.getString("_id");
+                            Log.d("PLAN ID", id);
                             employeeUsername = jsonObject.getString("employeeUsername");
                             travelDate = jsonObject.getString("travelDate");
                             endLocation = jsonObject.getString("endLocation");
@@ -104,7 +107,7 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
 
                             // Now, you have assigned values to the class properties for each JSON object in the array
                             // You can use these values as needed
-                            planList.add(new Plan(employeeUsername, travelDate, endLocation, new Plan.Coordinates(String.valueOf(latitude), String.valueOf(longitude)), accountantUsername));
+                            planList.add(new Plan(id, employeeUsername, travelDate, endLocation, new Plan.Coordinates(String.valueOf(latitude), String.valueOf(longitude)), accountantUsername));
                             if(planList.size() == 0) {
                                 Log.d("plan list", "boş");
                             }
@@ -144,10 +147,31 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
         Log.d("Tıklanan Plan", plan.toString());
         // Diğer ihtiyaç duyulan işlemleri gerçekleştirin
 
+        // Şu anki tarihi al
+        Date date = new Date();
+
+        // Tarih biçimleyici oluştur
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+
+        // Biçimlendirilmiş tarihi al
+        String formattedDate = sdf.format(date);
+
+        // Sonucu yazdır
+        System.out.println("Biçimlendirilmiş Tarih: " + formattedDate);
+        Log.d("tarih: ", formattedDate);
+        Log.d("tarih: ", plan.getTravelDate());
+
         PlanData.getInstance().setSharedData(plan);
 
-        Intent intent = new Intent(getApplicationContext(), PlanMap.class);
-        startActivity(intent);
+        if(formattedDate.equals(plan.getTravelDate())) {
+            Intent intent = new Intent(getApplicationContext(), PlanMap.class);
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(this, "Bu işlem yalnızca uygun tarihte gerçekleştirilebilir.", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 

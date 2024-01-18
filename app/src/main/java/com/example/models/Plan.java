@@ -1,18 +1,28 @@
 package com.example.models;
 
 public class Plan {
+    private String id;
     private String employeeUsername;
     private String travelDate;
     private String endLocation;
     private Coordinates coordinates;
     private String accountantUsername;
 
-    public Plan(String employeeUsername, String travelDate, String endLocation, Coordinates coordinates, String accountantUsername) {
+    public Plan(String id, String employeeUsername, String travelDate, String endLocation, Coordinates coordinates, String accountantUsername) {
+        this.id = id;
         this.employeeUsername = employeeUsername;
         this.travelDate = travelDate;
         this.endLocation = endLocation;
         this.coordinates = coordinates;
         this.accountantUsername = accountantUsername;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmployeeUsername() {
@@ -84,6 +94,7 @@ public class Plan {
     @Override
     public String toString() {
         return "Plan{" +
+                "id='" + id + '\'' +
                 "employeeUsername='" + employeeUsername + '\'' +
                 ", travelDate='" + travelDate + '\'' +
                 ", endLocation='" + endLocation + '\'' +
