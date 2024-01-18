@@ -1,6 +1,5 @@
 package com.example.geo_business;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,13 +9,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.telecom.Call;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -31,13 +28,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-
-import com.example.adapters.TravelAdapter;
 import com.example.api_requests.CityApiRequest;
 import com.example.api_requests.CreateTravelApiRequest;
-import com.example.api_requests.TravelsApiRequest;
+import com.example.models.Plan;
 import com.example.models.Travel;
 import com.example.models.User;
+import com.example.shared_data.PlanData;
 import com.example.shared_data.TokenData;
 import com.example.shared_data.UserData;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,10 +47,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.gson.Gson;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -64,12 +60,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -82,20 +76,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.MediaType;
 
-
-public class Map extends AppCompatActivity implements OnMapReadyCallback {
+public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int MAP_PERMISSION_CODE = 101;
     public static final int CAMERA_PERM_CODE = 102;
     public static final int CAMERA_REQUEST_CODE = 103;
-    private static final String TAG = "MapActivity";
+    private static final String TAG = "PlanMapActivity";
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
     double userLat, userLong;
@@ -114,6 +107,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     static Float invoicePrice;
 
     static Float priceEstimate;
+
+    private Plan plan = PlanData.getInstance().getSharedData();
+
+    // Callback arayüzü
+    interface LocationCallback {
+        void onLocationFetched(Location location);
+    }
 
 
     @Override
@@ -169,16 +169,50 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         map.setMyLocationEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
 
+        //fetchMyLocation();
+        //setDestinationLocation();
+
+        // fetchMyLocation fonksiyonunu asenkron olarak çağırın
+        fetchMyLocation(new LocationCallback() {
+            @Override
+            public void onLocationFetched(Location location) {
+                // fetchMyLocation tamamlandığında yapılacak işlemler
+
+                // setDestinationLocation fonksiyonunu çağırın
+                setDestinationLocation();
+            }
+        });
+
+
+
+
+        /*
+
+        LatLng latLng = new LatLng(Double.parseDouble(plan.getCoordinates().getLatitude()), Double.parseDouble(plan.getCoordinates().getLongtitude()));
+        // LatLng latLng = (LatLng) (plan.getCoordinates().getLatitude() + ", " + plan.getCoordinates().getLongtitude());
+
+        Log.d("latLng kontrol", latLng.toString());
+
+        destinationLocation = latLng;
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
+        map.addMarker(markerOptions);
+
+        getRoute(userLocation, destinationLocation);
+
+         */
+        /*
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 if(!isTravelStarted) {
                     map.clear();
                     destinationLocation = latLng;
-                    Log.d("destinationLocation", destinationLocation.toString());
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
-                    markerOptions.icon(setIcon(Map.this, R.drawable.lock_black_24dp));
+                    markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
                     map.addMarker(markerOptions);
 
                     getRoute(userLocation, destinationLocation);
@@ -186,21 +220,56 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        fetchMyLocation();
+         */
+
+
+    }
+
+    public void setDestinationLocation() {
+
+        String latitude = plan.getCoordinates().getLatitude();
+        String longitude = plan.getCoordinates().getLongtitude();
+
+        if (latitude != null && longitude != null) {
+            LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+            Log.d("latLng kontrol", latLng.toString());
+
+            destinationLocation = latLng;
+
+            Log.d("destinationLocation kontrol", destinationLocation.toString());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
+            map.addMarker(markerOptions);
+
+            getRoute(userLocation, destinationLocation);
+        } else {
+            Log.e("LatLng Conversion", "Invalid latitude or longitude values in the plan.");
+            // Handle the case where latitude or longitude is null
+        }
+
     }
 
     private void getRoute(LatLng origin, LatLng destination) {
+
+        if(origin != null) {
+            Log.d("oriigin boş", "evet");
+        }
+        if(destination != null) {
+            Log.d("destination boş", "evet");
+        }
+
+
+
         String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw"; // Replace with your Google Maps API Key
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                 origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
                 "&mode=driving&key=" + apiKey;
 
-        // Use a networking library or AsyncTask to make the API request
-        // and parse the response to get route details (polyline points)
-
         // For simplicity, you can use AsyncTask for demonstration purposes
-        new FetchDirectionsTask().execute(url);
+        new PlanMap.FetchDirectionsTask().execute(url);
     }
 
     private class FetchDirectionsTask extends AsyncTask<String, Void, String> {
@@ -235,13 +304,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         protected void onPostExecute(String result) {
             // Parse the JSON response to obtain the polyline points
             // Draw the polyline on the map
-            /*
-            Log.d("TAG", "API Response: " + result);
-            Toast.makeText(Map.this, "Mesafe: "+result., Toast.LENGTH_SHORT).show();
-
-            drawPolylineOnMap(result);
-
-             */
 
             // JSON yanıtını çözümle
             JSONObject jsonResponse = null;
@@ -298,7 +360,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
             // Başlangıç noktasını kullanarak bir şeyler yapabilirsiniz
             // Örneğin, bir Toast mesajı göstermek:
-            Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
+            Toast.makeText(PlanMap.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
             Log.d("Başlangıç Şehri:", startAddress);
             String city = extractCity(startAddress);
             System.out.println("Şehir: " + city);
@@ -324,7 +386,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
             // Toast mesajını oluştur ve göster
             String toastMessage = "Mesafe: " + distanceText;
-            Toast.makeText(Map.this, toastMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(PlanMap.this, toastMessage, Toast.LENGTH_SHORT).show();
             info.setText("Distance: " + distanceText);
 
             // String distanceText = "10.6 km";
@@ -370,21 +432,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             JSONObject json = new JSONObject(result);
 
             JSONArray routes = json.getJSONArray("routes");
-            /*
-            JSONObject route = routes.getJSONObject(0);
-            JSONObject overviewPolyline = route.getJSONObject("overview_polyline");
-            String encodedPolyline = overviewPolyline.getString("points");
-
-            List<LatLng> polylineList = decodePoly(encodedPolyline);
-
-            PolylineOptions polylineOptions = new PolylineOptions()
-                    .addAll(polylineList)
-                    .width(10)
-                    .color(Color.BLUE);
-
-            Polyline polyline = map.addPolyline(polylineOptions);
-
-             */
 
             JSONObject route = routes.length() > 0 ? routes.getJSONObject(0) : null;
             if (route != null) {
@@ -439,7 +486,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         return poly;
     }
 
-    private void fetchMyLocation() {
+    private void fetchMyLocation(LocationCallback callback) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -459,8 +506,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 map.addMarker(new MarkerOptions().position(latLng)
-                        .icon(setIcon(Map.this, R.drawable.baseline_register_circle_24)));
+                        .icon(setIcon(PlanMap.this, R.drawable.baseline_register_circle_24)));
 
+                // Callback ile konumu geri çağır
+                callback.onLocationFetched(location);
             }
         });
     }
@@ -553,16 +602,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         // Initialize Tesseract API
         TessBaseAPI tessBaseAPI = new TessBaseAPI();
         tessBaseAPI.init(getFilesDir().getPath(), "tur"); // You may need to replace "eng" with the appropriate language code
-        // tessBaseAPI.init(getExternalFilesDir(null).getAbsolutePath(), "tur");
-        // Set the image for OCR processing
-
-        // Save the Bitmap to a file in internal storage
-        // Bitmap bitmap = getBitmapFromFile(currentPhotoPath);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        // options.inSampleSize = 100; // 2 ile örneğin resmi yarı boyuta indirir
-        // options.inPurgeable = true;
-        // Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
 
         int maxWidth = 1920; // Maksimum genişlik değeri
         int maxHeight = 1080; // Maksimum yükseklik değeri
@@ -587,37 +628,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         Bitmap bitmap = null;
         bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
-        /*
-        try {
-            FileInputStream fileInputStream = new FileInputStream(currentPhotoPath);
-            if(fileInputStream == null) {
-                Log.d("TAG", "fileinpuıtstreamn null");
-            }
-            Log.d("ocr", "fileInputStream" + fileInputStream);
-            // bitmap = BitmapFactory.decodeStream(fileInputStream, null, options);
-            bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
-            if (bitmap == null) {
-                Log.e("bitmap deneme", "Cannot decode bitmap");
-            }
-            // FileInputStream'ı kapat (unutmayın!)
-            fileInputStream.close();
-            // Log.d("ocr", String.valueOf(bitmap.getWidth()));
-            // Rest of the code...
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("ocr", "Error decoding file: " + e.getMessage());
-        }
-
-         */
 
         Log.d("ocr", "başarılı");
-        // Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-        //Log.d("ocr", currentPhotoPath);
-        // File file = new File(currentPhotoPath);
         tessBaseAPI.setImage(bitmap);
-        //Log.d("ocr", file.getAbsolutePath());
-        //tessBaseAPI.setImage(file);
-        //Log.d("ocr", "bitmap 1");
 
         // Get the recognized text
         String recognizedText = tessBaseAPI.getUTF8Text();
@@ -691,14 +704,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         // create JSON Object with username and password
         JSONObject jsonParams = new JSONObject();
 
-        // Map<String, String> params = new HashMap<>();
-        // params.put("page", page);
-
-        // Map<String, String> headers = new HashMap<>();
-        // headers.put("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g");
-
-        // String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g";
-
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
         Log.e(TAG, "Access Token: " + accessToken);
@@ -720,7 +725,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                     if (jsonResponse.has("error")) {
                         // Login error
-                        Toast.makeText(Map.this, "Error!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PlanMap.this, "Error!", Toast.LENGTH_SHORT).show();
                     } else {
                         // Login successfully
                         String city = jsonResponse.getString("city");
@@ -729,15 +734,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                         priceEstimate = Float.valueOf(openingFee) + Float.valueOf(travelDistance) * Float.valueOf(feePerKm);
 
-                            Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
-                            Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
+                        Toast.makeText(PlanMap.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
+                        Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
 
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.e(TAG, "JSON Parsing Error: " + e.getMessage());
-                    Toast.makeText(Map.this, "HATA!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlanMap.this, "HATA!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -793,26 +798,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
 
-    /*
-    public void setTravelData() {
-        User user = UserData.getInstance().getSharedData();
-        String employeeUsername = user.getUsername();
-
-        // Tarih formatını belirle
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        // Tarihi metin olarak temsil eden bir String
-        String dateString = "12/23/2023";
-        // String'i LocalDate nesnesine çevir
-        LocalDate travelDate = LocalDate.parse(dateString, formatter);
-
-        // startLocation;
-        // endLocation;
-        // photoLink;
-
-    }
-
-
-     */
     public void setTravelData() {
 
         User user = UserData.getInstance().getSharedData();

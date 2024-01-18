@@ -1,5 +1,6 @@
 package com.example.geo_business;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.adapters.PlanAdapter;
 import com.example.api_requests.PlanListApiRequest;
 import com.example.models.Plan;
+import com.example.shared_data.PlanData;
 import com.example.shared_data.TokenData;
+import com.example.shared_data.UserData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -140,6 +143,11 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
         // Tıklanan öğenin değerlerini burada günlüğe kaydedin
         Log.d("Tıklanan Plan", plan.toString());
         // Diğer ihtiyaç duyulan işlemleri gerçekleştirin
+
+        PlanData.getInstance().setSharedData(plan);
+
+        Intent intent = new Intent(getApplicationContext(), PlanMap.class);
+        startActivity(intent);
     }
 
 
