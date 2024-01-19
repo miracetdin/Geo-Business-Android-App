@@ -108,7 +108,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     GoogleMap map;
     double userLat, userLong, curLat, curLong;
     private LatLng destinationLocation, userLocation, currentLocation;
-    Button startButton, endButton;
+    Button startButton, endButton, okButton, retakeButton;
     TextView info;
     private boolean isTravelStarted;
     static String currentPhotoPath;
@@ -155,10 +155,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         startButton = (Button) findViewById(R.id.startButton);
         endButton = (Button) findViewById(R.id.endButton);
+        okButton = (Button) findViewById(R.id.okButton);
+        retakeButton = (Button) findViewById(R.id.retakeButton);
         info = (TextView) findViewById(R.id.info);
 
         endButton.setVisibility(View.INVISIBLE);
         info.setVisibility(View.INVISIBLE);
+        okButton.setVisibility(View.INVISIBLE);
+        retakeButton.setVisibility(View.INVISIBLE);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,9 +184,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                     // Kullanıcı dairenin içinde
                     Toast.makeText(Map.this, "Kullanıcı dairenin içinde", Toast.LENGTH_SHORT).show();
                     isTravelStarted = false;
-                    startButton.setVisibility(View.VISIBLE);
+                    //startButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
-                    info.setVisibility(View.INVISIBLE);
+                    //info.setVisibility(View.INVISIBLE);
+
+
+                    okButton.setVisibility(View.VISIBLE);
+                    retakeButton.setVisibility(View.VISIBLE);
+                    endButton.setVisibility(View.INVISIBLE);
+                    startButton.setVisibility(View.INVISIBLE);
                     verifyCameraPermisson();
                 } else {
                     // Kullanıcı dairenin dışında
@@ -773,8 +783,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                         priceEstimate = Float.valueOf(openingFee) + Float.valueOf(travelDistance) * Float.valueOf(feePerKm);
 
-                            Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
-                            Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
+                        // Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
+                        Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
 
                     }
 
@@ -854,8 +864,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         String invoiceInfo = travelDistance;
 
         String status = "waiting";
-        String approveByAccountant = null;
-        String approveDate = null;
+        String approveByAccountant = "-";
+        String approveDate = "-";
 
         Travel travel = new Travel(
                 employeeUsername, travelDate.toString(), startLocation, endLocation, invoicePhoto, invoiceInfo+" km",
@@ -875,13 +885,75 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         // API request
         String apiUrl = "http://192.168.1.54:4000/travel/";
+
         CreateTravelApiRequest createTravelApiRequest = new CreateTravelApiRequest(new CreateTravelApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
                 Log.d(TAG, "API Response: " + result);
+
+                if(result == null) {
+                    Toast.makeText(Map.this, "Kayıt işlemi başarısız oldu!", Toast.LENGTH_SHORT).show();
+                    dispatchTakePictureIntent();
+                }
+                /*
+                else {
+
+                    info.setVisibility(View.VISIBLE);
+                    info.setText("Invoice Price: " + invoicePrice.toString() + " TL");
+
+                    okButton.setVisibility(View.VISIBLE);
+                    retakeButton.setVisibility(View.VISIBLE);
+                    endButton.setVisibility(View.INVISIBLE);
+                    startButton.setVisibility(View.INVISIBLE);
+
+                    retakeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dispatchTakePictureIntent();
+                        }
+                    });
+
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getApplicationContext(), Menu.class);
+                            startActivity(intent);
+                        }
+                    });
+                }
+
+                 */
+
+                Intent intent = new Intent(getApplicationContext(), Menu.class);
+                startActivity(intent);
+
+
             }
         });
-        createTravelApiRequest.execute(apiUrl, body, accessToken);
+
+        if (invoicePrice == null) {
+            dispatchTakePictureIntent();
+        }
+
+        info.setVisibility(View.VISIBLE);
+        info.setText("Invoice Price: " + String.valueOf(invoicePrice) + " TL");
+
+
+        retakeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createTravelApiRequest.execute(apiUrl, body, accessToken);
+            }
+        });
+
+        // createTravelApiRequest.execute(apiUrl, body, accessToken);
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {

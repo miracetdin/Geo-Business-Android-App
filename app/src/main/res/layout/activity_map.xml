@@ -20,8 +20,27 @@
         android:textAlignment="center"
         android:background="@color/gray"
         android:theme="@style/Base.CardView"
-        android:layout_marginBottom="22dp"
+        android:layout_marginBottom="50dp"
         android:textColor="@color/yellow"/>
+
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="Ok"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/retakeButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="Retake Photo"
+        android:layout_above="@id/okButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/endButton"
@@ -41,4 +60,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="20dp"/>
+
 </RelativeLayout>
