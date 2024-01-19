@@ -32,6 +32,7 @@ import androidx.core.content.FileProvider;
 import com.example.api_requests.CityApiRequest;
 import com.example.api_requests.CreateTravelApiRequest;
 import com.example.api_requests.DeletePlanApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.Plan;
 import com.example.models.Travel;
 import com.example.models.User;
@@ -847,7 +848,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         // String city = "Adana";
 
         // API request
-        String apiUrl = "http://192.168.1.54:4000/fee/"+currentCity;
+        String apiUrl = ApiConfig.BASE_API_URL + "/fee/" + currentCity;
         CityApiRequest cityApiRequest = new CityApiRequest(new CityApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
@@ -992,7 +993,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
-        String apiUrl = "http://192.168.1.54:4000/travel/";
+        String apiUrl = ApiConfig.BASE_API_URL + "/travel/";
         CreateTravelApiRequest createTravelApiRequest = new CreateTravelApiRequest(new CreateTravelApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
@@ -1007,7 +1008,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
                 if(result != null && result.contains("saved")) {
                     System.out.println("silme işlemine başladı");
-                    String apiUrl = "http://192.168.1.54:4000";
+                    String apiUrl = ApiConfig.BASE_API_URL;
                     String[] tokens = TokenData.getInstance().getSharedData();
                     String accessToken = tokens[0];
                     Log.e(TAG, "Access Token: " + accessToken);

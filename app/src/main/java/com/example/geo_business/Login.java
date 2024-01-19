@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.api_requests.LoginApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.User;
 import com.example.shared_data.TokenData;
 import com.example.shared_data.UserData;
@@ -65,7 +66,7 @@ public class Login extends AppCompatActivity {
             }
 
             // API request
-            String apiUrl = "http://192.168.1.54:4000/auth/login";
+            String apiUrl = ApiConfig.BASE_API_URL + "/auth/login";
             LoginApiRequest loginApiRequest = new LoginApiRequest(new LoginApiRequest.ApiCallback() {
                 @Override
                 public void onTaskComplete(String result) {

@@ -37,6 +37,7 @@ import com.example.adapters.TravelAdapter;
 import com.example.api_requests.CityApiRequest;
 import com.example.api_requests.CreateTravelApiRequest;
 import com.example.api_requests.TravelsApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.Travel;
 import com.example.models.User;
 import com.example.shared_data.TokenData;
@@ -759,7 +760,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
-        String apiUrl = "http://192.168.1.54:4000/fee/"+currentCity;
+        String apiUrl = ApiConfig.BASE_API_URL + "/fee/" + currentCity;
         CityApiRequest cityApiRequest = new CityApiRequest(new CityApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
@@ -884,7 +885,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
-        String apiUrl = "http://192.168.1.54:4000/travel/";
+        String apiUrl = ApiConfig.BASE_API_URL + "/travel/";
 
         CreateTravelApiRequest createTravelApiRequest = new CreateTravelApiRequest(new CreateTravelApiRequest.ApiCallback() {
             @Override

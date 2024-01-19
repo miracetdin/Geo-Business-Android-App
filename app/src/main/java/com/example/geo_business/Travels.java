@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.adapters.TravelAdapter;
 import com.example.api_requests.LoginApiRequest;
 import com.example.api_requests.TravelsApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.Travel;
 import com.example.models.User;
 import com.example.shared_data.TokenData;
@@ -78,7 +79,7 @@ public class Travels extends AppCompatActivity {
         Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
-        String apiUrl = "http://192.168.1.54:4000/travel/?page=1";
+        String apiUrl = ApiConfig.BASE_API_URL + "/travel/?page=1";
         TravelsApiRequest travelsApiRequest = new TravelsApiRequest(new TravelsApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {

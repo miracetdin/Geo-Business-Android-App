@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.api_requests.LoginApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.User;
 
 import org.json.JSONException;
@@ -76,7 +77,7 @@ public class Register extends AppCompatActivity {
                 }
 
                 // API request
-                String apiUrl = "http://192.168.1.54:4000/auth/register";
+                String apiUrl = ApiConfig.BASE_API_URL + "/auth/register";
                 LoginApiRequest loginApiRequest = new LoginApiRequest(new LoginApiRequest.ApiCallback() {
                     @Override
                     public void onTaskComplete(String result) {

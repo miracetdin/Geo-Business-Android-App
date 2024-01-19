@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adapters.PlanAdapter;
 import com.example.api_requests.PlanListApiRequest;
+import com.example.config.ApiConfig;
 import com.example.models.Plan;
 import com.example.shared_data.PlanData;
 import com.example.shared_data.TokenData;
@@ -67,7 +68,7 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
         String accessToken = tokens[0];
         Log.e(TAG, "Access Token: " + accessToken);
 
-        String apiUrl = "http://192.168.1.54:4000/plan/?page=1";  // Update the base URL accordingly
+        String apiUrl = ApiConfig.BASE_API_URL + "/plan/?page=1";  // Update the base URL accordingly
 
         // Assuming jsonResponse is a JSONArray
         PlanListApiRequest planListApiRequest = new PlanListApiRequest(new PlanListApiRequest.ApiCallback() {
