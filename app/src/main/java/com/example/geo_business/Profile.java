@@ -42,9 +42,9 @@ public class Profile extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Travels.class);
+                Intent intent = new Intent(getApplicationContext(), Menu.class);
                 startActivity(intent);
-                Toast.makeText(Profile.this, "TRACELS SAYFA", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Profile.this, "TRACELS SAYFA", Toast.LENGTH_SHORT).show();
             }
         });
     }

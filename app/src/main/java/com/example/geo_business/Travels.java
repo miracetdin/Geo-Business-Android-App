@@ -3,6 +3,9 @@ package com.example.geo_business;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -97,6 +100,9 @@ public class Travels extends AppCompatActivity {
                             JSONObject jsonObject = jsonResponse.getJSONObject(i);
                             Log.d(TAG, "jsonResponse(i): " + jsonResponse.getJSONObject(i));
 
+
+
+
                             // Accessing the fields in the JSON object and assigning them to the class properties
                             id = jsonObject.getString("_id");
                             username = jsonObject.getString("employeeUsername");
@@ -129,6 +135,8 @@ public class Travels extends AppCompatActivity {
                         }
                     }
 
+                    Log.d("travels size", String.valueOf(travelList.size()));
+
                     // Notify the adapter that the data has changed
                     runOnUiThread(new Runnable() {
                         @Override
@@ -144,6 +152,7 @@ public class Travels extends AppCompatActivity {
                 }
             }
         });
-        travelsApiRequest.execute(apiUrl, jsonParams.toString(), "GET", page, accessToken);
+        //travelsApiRequest.execute(apiUrl, jsonParams.toString(), "GET", page, accessToken);
+        travelsApiRequest.execute(apiUrl, page, accessToken);
     }
 }
