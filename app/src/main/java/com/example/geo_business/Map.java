@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.Image;
@@ -669,7 +670,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
 
         Log.d("ocr", "başarılı");
-        tessBaseAPI.setImage(bitmap);
+
+        // tessBaseAPI.setImage(bitmap);
+        tessBaseAPI.setImage(rotateBitmap(bitmap, 90));
 
         // Get the recognized text
         String recognizedText = tessBaseAPI.getUTF8Text();
@@ -700,6 +703,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         // End the OCR processing
         tessBaseAPI.end();
+    }
+
+    // Bitmap'ı istediğiniz açıda döndüren fonksiyon
+    private Bitmap rotateBitmap(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     private void copyTessData() {
