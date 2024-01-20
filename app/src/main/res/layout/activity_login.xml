@@ -49,6 +49,7 @@
 
     <EditText
         android:id="@+id/login_et_password"
+        android:inputType="textPassword"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_alignStart="@id/login_tv_password"
@@ -72,17 +73,7 @@
         android:text="LOGIN"
         android:textColor="@color/white"/>
 
-    <Button
-        android:id="@+id/login_bt_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_bt_login"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:ems="8"
-        android:backgroundTint="@color/gray"
-        android:text="SIGN UP"
-        android:textColor="@color/white"/>
+
 
 
 

@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity {
         password = (EditText) findViewById(R.id.login_et_password);
 
         login = (Button) findViewById(R.id.login_bt_login);
-        register = (Button) findViewById(R.id.login_bt_register);
+        //register = (Button) findViewById(R.id.login_bt_register);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +44,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /*
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +52,8 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+         */
     }
 
     public void loginFunc() {

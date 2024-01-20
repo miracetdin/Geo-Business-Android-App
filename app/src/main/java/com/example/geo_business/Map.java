@@ -460,7 +460,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                     matchedValue = String.valueOf(Float.valueOf(matchedValue) / 100.0F);
                 }
 
-                Toast.makeText(Map.this, matchedValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Map.this, matchedValue+" Km", Toast.LENGTH_SHORT).show();
 
 
 

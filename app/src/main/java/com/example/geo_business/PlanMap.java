@@ -528,6 +528,16 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             if (matcher.find()) {
                 String matchedValue = matcher.group(); // Eşleşen tam sayısal değeri içerir
                 System.out.println("Distance: " + matchedValue);
+
+                if(distanceText.contains("km")) {
+                    System.out.println("ok");;
+                }
+                else {
+                    matchedValue = String.valueOf(Float.valueOf(matchedValue) / 100.0F);
+                }
+
+                Toast.makeText(PlanMap.this, matchedValue+" Km", Toast.LENGTH_SHORT).show();
+
                 travelDistance = matchedValue;
             }
 
@@ -869,8 +879,13 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                         String city = jsonResponse.getString("city");
                         String openingFee = jsonResponse.getString("openingFee");
                         String feePerKm = jsonResponse.getString("feePerKm");
+                        String shortDistance = jsonResponse.getString("shortDistance");
 
                         priceEstimate = Float.valueOf(openingFee) + Float.valueOf(travelDistance) * Float.valueOf(feePerKm);
+
+                        if(priceEstimate < Float.valueOf(shortDistance)) {
+                            priceEstimate = Float.valueOf(shortDistance);
+                        }
 
                         // Toast.makeText(PlanMap.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
                         Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
