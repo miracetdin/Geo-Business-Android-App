@@ -46,7 +46,7 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.employeeUsername = view.findViewById(R.id.plan_tv_employeeUsername);
             this.travelDate = view.findViewById(R.id.plan_tv_travelDate);
             this.endLocation = view.findViewById(R.id.plan_tv_endLocation);
-            this.accountantUsername = view.findViewById(R.id.plan_tv_accountantUsername);
+            // this.accountantUsername = view.findViewById(R.id.plan_tv_accountantUsername);
         }
     }
 
@@ -71,13 +71,13 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Log.d("plan deneme", String.valueOf(position));
 
         if (plan != null) {
-            ((PlanViewHolder) holder).employeeUsername.setText(plan.getEmployeeUsername());
-            ((PlanViewHolder) holder).travelDate.setText(plan.getTravelDate());
-            ((PlanViewHolder) holder).endLocation.setText(plan.getEndLocation());
+            ((PlanViewHolder) holder).employeeUsername.setText("Username: " + plan.getEmployeeUsername());
+            ((PlanViewHolder) holder).travelDate.setText("Travel Date: " + plan.getTravelDate());
+            ((PlanViewHolder) holder).endLocation.setText("End Location: " + plan.getEndLocation());
 
             // Plan.Coordinates coordinates = plan.getCoordinates();
 
-            ((PlanViewHolder) holder).accountantUsername.setText(plan.getAccountantUsername());
+            //((PlanViewHolder) holder).accountantUsername.setText(plan.getAccountantUsername());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

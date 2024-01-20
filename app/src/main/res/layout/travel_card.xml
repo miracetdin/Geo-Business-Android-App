@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray"
                 android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/travel_tv_id"
                 android:layout_marginTop="20dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -90,7 +90,7 @@
                 android:layout_below="@id/travel_tv_username"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -116,7 +116,7 @@
                 android:layout_below="@id/travel_tv_travelDate"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -142,7 +142,7 @@
                 android:layout_below="@id/travel_tv_startLocation"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -168,7 +168,7 @@
                 android:layout_below="@id/travel_tv_endLocation"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -197,7 +197,7 @@
                 android:layout_below="@id/travel_tv_invoiceInfo"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -229,7 +229,7 @@
                 android:layout_below="@id/travel_tv_invoicePrice"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:textColor="@color/gray" />
 
         </androidx.cardview.widget.CardView>
@@ -255,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/travel_tv_status"
                 android:layout_marginTop="20dp"
-                android:textAlignment="textEnd"
+                android:textAlignment="textStart"
                 android:layout_marginEnd="10dp"
                 android:textColor="@color/gray"/>
 

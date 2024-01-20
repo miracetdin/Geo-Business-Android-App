@@ -48,25 +48,25 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-        public TravelAdapter(ArrayList<Travel> dataSet, Context context) {
-            this.travelList = dataSet;
-            this.travelContext = context;
-        }
+    public TravelAdapter(ArrayList<Travel> dataSet, Context context) {
+        this.travelList = dataSet;
+        this.travelContext = context;
+    }
 
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
 
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.travel_card, parent, false);
-            return new TravelViewHolder(view);
-        }
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.travel_card, parent, false);
+        return new TravelViewHolder(view);
+    }
 
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Travel travel = travelList.get(travelList.size() - position - 1);
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Travel travel = travelList.get(travelList.size() - position - 1);
 
-            if (travel != null) {
-                // ImageView
-                //((TravelViewHolder) holder).invoicePhoto.setImageResource(travel.getInvoicePhoto());
+        if (travel != null) {
+            // ImageView
+            //((TravelViewHolder) holder).invoicePhoto.setImageResource(travel.getInvoicePhoto());
 
                 /*
                 // TextView'ler
@@ -86,21 +86,21 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                  */
 
-                ((TravelViewHolder) holder).id.setText("     ID:  " + String.valueOf(travel.getId()));
-                ((TravelViewHolder) holder).username.setText("     Username:  " + travel.getUsername());
-                ((TravelViewHolder) holder).travelDate.setText("     Date: " + travel.getTravelDate());
-                ((TravelViewHolder) holder).startLocation.setText("     Start Location:  " + travel.getStartLocation());
-                ((TravelViewHolder) holder).endLocation.setText("     End Location:  " + travel.getEndLocation());
-                //((TravelViewHolder) holder).invoiceNote.setText("     Distance:  "travel.getInvoiceNote());
-                ((TravelViewHolder) holder).invoiceInfo.setText("     Info:  " + travel.getInvoiceInfo());
-                ((TravelViewHolder) holder).invoicePrice.setText("     Invoice Price:  " + String.valueOf(travel.getInvoicePrice()));
-                //((TravelViewHolder) holder).priceEstimate.setText("     Estimated Price:  "String.valueOf(travel.getPriceEstimate()));
-                //((TravelViewHolder) holder).suspicious.setText("     Suspicious:  "String.valueOf(travel.getSuspicious()));
-                ((TravelViewHolder) holder).status.setText("     Status:  " + travel.getStatus());
-                //((TravelViewHolder) holder).approveByAccountant.setText(travel.getApproveByAccountant());
-                ((TravelViewHolder) holder).approveDate.setText("     Approve Date:  " + travel.getApproveDate());
-            }
+            ((TravelViewHolder) holder).id.setText("ID:  " + String.valueOf(travel.getId()));
+            ((TravelViewHolder) holder).username.setText("Username:  " + travel.getUsername());
+            ((TravelViewHolder) holder).travelDate.setText("Date: " + travel.getTravelDate());
+            ((TravelViewHolder) holder).startLocation.setText("Start Location:  " + travel.getStartLocation());
+            ((TravelViewHolder) holder).endLocation.setText("End Location:  " + travel.getEndLocation());
+            //((TravelViewHolder) holder).invoiceNote.setText("     Distance:  "travel.getInvoiceNote());
+            ((TravelViewHolder) holder).invoiceInfo.setText("Distance:  " + travel.getInvoiceInfo());
+            ((TravelViewHolder) holder).invoicePrice.setText("Invoice Price:  " + String.valueOf(travel.getInvoicePrice()));
+            //((TravelViewHolder) holder).priceEstimate.setText("     Estimated Price:  "String.valueOf(travel.getPriceEstimate()));
+            //((TravelViewHolder) holder).suspicious.setText("     Suspicious:  "String.valueOf(travel.getSuspicious()));
+            ((TravelViewHolder) holder).status.setText("Status:  " + travel.getStatus());
+            //((TravelViewHolder) holder).approveByAccountant.setText(travel.getApproveByAccountant());
+            ((TravelViewHolder) holder).approveDate.setText("Approve Date:  " + travel.getApproveDate());
         }
+    }
 
     public void updateData(ArrayList<Travel> newTravelList) {
         // travelList'i güncelle
@@ -109,7 +109,7 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-        public int getItemCount() {
-            return travelList.size();
-        }
+    public int getItemCount() {
+        return travelList.size();
+    }
 }
