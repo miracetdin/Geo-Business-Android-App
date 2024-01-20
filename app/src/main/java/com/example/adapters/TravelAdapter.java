@@ -22,26 +22,26 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public static class TravelViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView invoicePhoto;
-        TextView id, username, travelDate, startLocation, endLocation, invoiceNote, invoiceInfo, invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate;
+        //ImageView invoicePhoto;
+        TextView id, username, travelDate, startLocation, endLocation, invoiceInfo, invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate;
 
         public TravelViewHolder(View view) {
             super(view);
 
             // Her duyuru; görsel, başlık ve tarih içermektedir
-            this.invoicePhoto = (ImageView) view.findViewById(R.id.travel_iv_photo);
+            //this.invoicePhoto = (ImageView) view.findViewById(R.id.travel_iv_photo);
             this.id = view.findViewById(R.id.travel_tv_id);
             this.username = view.findViewById(R.id.travel_tv_username);
             this.travelDate = view.findViewById(R.id.travel_tv_travelDate);
             this.startLocation = view.findViewById(R.id.travel_tv_startLocation);
             this.endLocation = view.findViewById(R.id.travel_tv_endLocation);
-            this.invoiceNote = view.findViewById(R.id.travel_tv_invoiceNote);
+            //this.invoiceNote = view.findViewById(R.id.travel_tv_invoiceNote);
             this.invoiceInfo = view.findViewById(R.id.travel_tv_invoiceInfo);
             this.invoicePrice = view.findViewById(R.id.travel_tv_invoicePrice);
-            this.priceEstimate = view.findViewById(R.id.travel_tv_priceEstimate);
-            this.suspicious = view.findViewById(R.id.travel_tv_suspicious);
+            //this.priceEstimate = view.findViewById(R.id.travel_tv_priceEstimate);
+            //this.suspicious = view.findViewById(R.id.travel_tv_suspicious);
             this.status = view.findViewById(R.id.travel_tv_status);
-            this.approveByAccountant = view.findViewById(R.id.travel_tv_approveByAccountant);
+            //this.approveByAccountant = view.findViewById(R.id.travel_tv_approveByAccountant);
             this.approveDate = view.findViewById(R.id.travel_tv_approveDate);
 
         }
@@ -68,6 +68,7 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // ImageView
                 //((TravelViewHolder) holder).invoicePhoto.setImageResource(travel.getInvoicePhoto());
 
+                /*
                 // TextView'ler
                 ((TravelViewHolder) holder).id.setText(String.valueOf(travel.getId()));
                 ((TravelViewHolder) holder).username.setText(travel.getUsername());
@@ -77,11 +78,27 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //((TravelViewHolder) holder).invoiceNote.setText(travel.getInvoiceNote());
                 ((TravelViewHolder) holder).invoiceInfo.setText(travel.getInvoiceInfo());
                 ((TravelViewHolder) holder).invoicePrice.setText(String.valueOf(travel.getInvoicePrice()));
-                ((TravelViewHolder) holder).priceEstimate.setText(String.valueOf(travel.getPriceEstimate()));
-                ((TravelViewHolder) holder).suspicious.setText(String.valueOf(travel.getSuspicious()));
+                //((TravelViewHolder) holder).priceEstimate.setText(String.valueOf(travel.getPriceEstimate()));
+                //((TravelViewHolder) holder).suspicious.setText(String.valueOf(travel.getSuspicious()));
                 ((TravelViewHolder) holder).status.setText(travel.getStatus());
-                ((TravelViewHolder) holder).approveByAccountant.setText(travel.getApproveByAccountant());
+                //((TravelViewHolder) holder).approveByAccountant.setText(travel.getApproveByAccountant());
                 ((TravelViewHolder) holder).approveDate.setText(travel.getApproveDate());
+
+                 */
+
+                ((TravelViewHolder) holder).id.setText("     ID:  " + String.valueOf(travel.getId()));
+                ((TravelViewHolder) holder).username.setText("     Username:  " + travel.getUsername());
+                ((TravelViewHolder) holder).travelDate.setText("     Date: " + travel.getTravelDate());
+                ((TravelViewHolder) holder).startLocation.setText("     Start Location:  " + travel.getStartLocation());
+                ((TravelViewHolder) holder).endLocation.setText("     End Location:  " + travel.getEndLocation());
+                //((TravelViewHolder) holder).invoiceNote.setText("     Distance:  "travel.getInvoiceNote());
+                ((TravelViewHolder) holder).invoiceInfo.setText("     Info:  " + travel.getInvoiceInfo());
+                ((TravelViewHolder) holder).invoicePrice.setText("     Invoice Price:  " + String.valueOf(travel.getInvoicePrice()));
+                //((TravelViewHolder) holder).priceEstimate.setText("     Estimated Price:  "String.valueOf(travel.getPriceEstimate()));
+                //((TravelViewHolder) holder).suspicious.setText("     Suspicious:  "String.valueOf(travel.getSuspicious()));
+                ((TravelViewHolder) holder).status.setText("     Status:  " + travel.getStatus());
+                //((TravelViewHolder) holder).approveByAccountant.setText(travel.getApproveByAccountant());
+                ((TravelViewHolder) holder).approveDate.setText("     Approve Date:  " + travel.getApproveDate());
             }
         }
 

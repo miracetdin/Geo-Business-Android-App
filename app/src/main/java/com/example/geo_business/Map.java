@@ -183,7 +183,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                 if (inside) {
                     // Kullanıcı dairenin içinde
-                    Toast.makeText(Map.this, "Kullanıcı dairenin içinde", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Map.this, "Take a invoice photo", Toast.LENGTH_SHORT).show();
                     isTravelStarted = false;
                     //startButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
@@ -197,7 +197,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                     verifyCameraPermisson();
                 } else {
                     // Kullanıcı dairenin dışında
-                    Toast.makeText(Map.this, "Kullanıcı dairenin dışında", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Map.this, "You are not in the target position", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -413,7 +413,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
-            Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
             Log.d("Başlangıç Şehri:", startAddress);
             String city = extractCity(startAddress);
             System.out.println("Şehir: " + city);
@@ -438,7 +438,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
 
             // Toast mesajını oluştur ve göster
-            String toastMessage = "Mesafe: " + distanceText;
+            String toastMessage = "Distance: " + distanceText;
             Toast.makeText(Map.this, toastMessage, Toast.LENGTH_SHORT).show();
             info.setText("Distance: " + distanceText);
 
@@ -614,7 +614,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 dispatchTakePictureIntent();
                 // Image captured successfully, now start OCR
             }else {
-                Toast.makeText(this, "Kamerayı kullanmak için izin gerekmektedir!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission is required to use the camera!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -631,7 +631,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 Log.d("Kamera", "3");
                 photoFile = createImageFile();
             } catch (IOException exception) {
-                Toast.makeText(this, "Fotoğraf dosyası oluşturulamadı!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Photo file could not be created!", Toast.LENGTH_SHORT).show();
             }
 
             if (photoFile != null) {
@@ -713,7 +713,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         // Display or process the recognized text as needed
         if (!TextUtils.isEmpty(recognizedText)) {
-            Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
             Log.d("OCR Result: ", recognizedText);
 
             // Fatura fiyatını tespit etmek için regex
@@ -820,7 +820,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.e(TAG, "JSON Parsing Error: " + e.getMessage());
-                    Toast.makeText(Map.this, "HATA!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Map.this, "ERROR!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -921,7 +921,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 Log.d(TAG, "API Response: " + result);
 
                 if(result == null) {
-                    Toast.makeText(Map.this, "Kayıt işlemi başarısız oldu!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Map.this, "The save operation failed!", Toast.LENGTH_SHORT).show();
                     dispatchTakePictureIntent();
                 }
                 /*
@@ -961,6 +961,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         });
 
         if (invoicePrice == null) {
+            //Toast.makeText(this, "OCR does not get any price!", Toast.LENGTH_SHORT).show();
             dispatchTakePictureIntent();
         }
 

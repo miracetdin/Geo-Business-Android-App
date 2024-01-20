@@ -13,8 +13,8 @@
         android:id="@+id/menu_tv_welcome"
         android:text="Welcome!"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:textSize="25dp"/>
+        android:layout_marginTop="80dp"
+        android:textSize="35dp"/>
 
 
     <TextView
@@ -23,47 +23,53 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/menu_tv_welcome"
         android:layout_centerHorizontal="true"
+        android:textSize="15dp"
         android:hint="Loading"/>
 
 
     <Button
         android:id="@+id/menu_bt_profile"
         android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="100dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="240dp"
         android:text="Profile"
-        android:textSize="20dp" />
+        android:textSize="18dp"
+        android:background="@drawable/oval_background"
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="150dp"
-        android:layout_height="100dp"
+        android:layout_height="60dp"
         android:id="@+id/menu_bt_travels"
         android:layout_below="@id/menu_bt_profile"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="130dp"
+        android:background="@drawable/oval_background"
         android:text="History"
-        android:textSize="20dp"/>
+        android:textSize="18dp"
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="150dp"
-        android:layout_height="100dp"
+        android:layout_height="60dp"
         android:id="@+id/menu_bt_create"
         android:layout_below="@id/menu_bt_travels"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="130dp"
         android:text="Make a Trip!"
-        android:textSize="18dp"/>
+        android:background="@drawable/oval_background"
+        android:textSize="18dp"
+        android:layout_centerHorizontal="true"/>
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="100dp"
         android:id="@+id/menu_bt_plan"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
         android:layout_below="@id/menu_bt_create"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="130dp"
-        android:text="Plan"
-        android:textSize="18dp"/>
+        android:background="@drawable/oval_background"
+        android:text="Plans"
+        android:textSize="18dp"
+        android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>
