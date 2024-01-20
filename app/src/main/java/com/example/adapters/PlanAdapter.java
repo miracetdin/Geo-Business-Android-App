@@ -68,7 +68,7 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Plan plan = planList.get(position);
 
         Log.d("plan deneme", "plan onBindViewHolder");
-        Log.d("plan deneme", plan.toString());
+        Log.d("plan deneme", String.valueOf(position));
 
         if (plan != null) {
             ((PlanViewHolder) holder).employeeUsername.setText(plan.getEmployeeUsername());

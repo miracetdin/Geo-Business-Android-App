@@ -62,7 +62,7 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Travel travel = travelList.get(position);
+            Travel travel = travelList.get(travelList.size() - position - 1);
 
             if (travel != null) {
                 // ImageView
@@ -74,7 +74,7 @@ public class TravelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ((TravelViewHolder) holder).travelDate.setText(travel.getTravelDate());
                 ((TravelViewHolder) holder).startLocation.setText(travel.getStartLocation());
                 ((TravelViewHolder) holder).endLocation.setText(travel.getEndLocation());
-                ((TravelViewHolder) holder).invoiceNote.setText(travel.getInvoiceNote());
+                //((TravelViewHolder) holder).invoiceNote.setText(travel.getInvoiceNote());
                 ((TravelViewHolder) holder).invoiceInfo.setText(travel.getInvoiceInfo());
                 ((TravelViewHolder) holder).invoicePrice.setText(String.valueOf(travel.getInvoicePrice()));
                 ((TravelViewHolder) holder).priceEstimate.setText(String.valueOf(travel.getPriceEstimate()));
