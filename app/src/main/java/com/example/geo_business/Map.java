@@ -854,7 +854,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         System.out.println("foto yükleme başladı");
         Request request = new Request.Builder()
                 //.url(BASE_API_URL+"/upload")
-                .url("http://16.171.40.96/api/upload")
+                .url(BASE_API_URL+"/upload")
                 .post(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {

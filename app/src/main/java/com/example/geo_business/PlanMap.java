@@ -1,5 +1,7 @@
 package com.example.geo_business;
 
+import static com.example.config.ApiConfig.BASE_API_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -548,18 +550,25 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
     private static String extractCity(String address) {
         // Örnek regex deseni
-        Pattern pattern = Pattern.compile("(\\w+/\\w+),");
+        //Pattern pattern = Pattern.compile("(\\w+/\\w+),");
+        //Pattern pattern = Pattern.compile("\\b(\\p{L}+)/\\p{L}+\\b");
+        Pattern pattern = Pattern.compile("(\\p{L}+)/(\\p{L}+),.*");
         Matcher matcher = pattern.matcher(address);
 
         if (matcher.find()) {
-            // İlk eşleşen kısmı al (Çukurova/Adana)
-            String cityPart = matcher.group(1);
+            // İlk eşleşen kısmı al
+            //String cityPart = matcher.group(1);
 
             // / işaretine göre bölerek şehir ismini al
-            String[] parts = cityPart.split("/");
-            if (parts.length > 1) {
-                return parts[1].trim();
-            }
+            //String[] parts = cityPart.split("/");
+            //if (parts.length > 1) {
+            //    return parts[2].trim();
+            //}
+
+            // Eşleşen kısımları alarak şehir ve ilçe/ülke bilgisini çıkar
+            String cityPart = matcher.group(2);
+
+            return cityPart.trim();
         }
 
         return null; // Eşleşme bulunamazsa null döndürülebilir
@@ -917,7 +926,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 .build();
         Log.d("Kayıt", "2");
         Request request = new Request.Builder()
-                .url("http://192.168.1.54:4000/upload")
+                .url(BASE_API_URL+"/upload")
                 .post(requestBody)
                 .build();
         Log.d("Kayıt", "3");
