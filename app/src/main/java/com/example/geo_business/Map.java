@@ -740,7 +740,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
 
             getCity();
-            System.out.println("foto yükleme 2");
+            System.out.println("foto yükleme 3");
             saveImageToServer(new File(currentPhotoPath));
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
@@ -827,7 +827,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                         // Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
                         Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
-                        System.out.println("foto yükleme 3");
+                        System.out.println("foto yükleme 2");
 
                     }
 
@@ -838,12 +838,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 }
             }
         });
-        System.out.println("foto yükleme 4");
+        System.out.println("foto yükleme 1");
         cityApiRequest.execute(apiUrl, "GET", currentCity, accessToken);
     }
 
     private void saveImageToServer(File file) {
-        System.out.println("foto yükleme 1");
+        System.out.println("foto yükleme 4");
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
@@ -861,6 +861,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    System.out.println("foto kayıt işlemi başarılı");
                     String responseData = response.body().string();
                     Log.d("Server Response", responseData);
 
@@ -875,6 +876,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                         e.printStackTrace();
                         Log.e("Server Response", "Error parsing JSON: " + e.getMessage());
                     }
+                }
+                else {
+                    System.out.println("foto kayıt işlemi başarılı değil");
+                    System.out.println(response.code());
                 }
             }
 
