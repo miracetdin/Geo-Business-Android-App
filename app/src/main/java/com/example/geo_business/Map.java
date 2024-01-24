@@ -1,6 +1,8 @@
 package com.example.geo_business;
 
 
+import static com.example.config.ApiConfig.BASE_API_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -95,6 +97,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.MediaType;
+
+import com.example.config.ApiConfig;
 
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
@@ -484,18 +488,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     private static String extractCity(String address) {
         // Örnek regex deseni
-        Pattern pattern = Pattern.compile("(\\w+/\\w+),");
+        //Pattern pattern = Pattern.compile("(\\w+/\\w+),");
+        //Pattern pattern = Pattern.compile("\\b(\\p{L}+)/\\p{L}+\\b");
+        Pattern pattern = Pattern.compile("(\\p{L}+)/(\\p{L}+),.*");
         Matcher matcher = pattern.matcher(address);
 
         if (matcher.find()) {
             // İlk eşleşen kısmı al
-            String cityPart = matcher.group(1);
+            //String cityPart = matcher.group(1);
 
             // / işaretine göre bölerek şehir ismini al
-            String[] parts = cityPart.split("/");
-            if (parts.length > 1) {
-                return parts[1].trim();
-            }
+            //String[] parts = cityPart.split("/");
+            //if (parts.length > 1) {
+            //    return parts[2].trim();
+            //}
+
+            // Eşleşen kısımları alarak şehir ve ilçe/ülke bilgisini çıkar
+            String cityPart = matcher.group(2);
+
+            return cityPart.trim();
         }
 
         return null; // Eşleşme bulunamazsa null döndürülebilir
@@ -729,6 +740,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
 
             getCity();
+            System.out.println("foto yükleme 2");
             saveImageToServer(new File(currentPhotoPath));
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
@@ -784,6 +796,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         // API request
         String apiUrl = ApiConfig.BASE_API_URL + "/fee/" + currentCity;
+        System.out.println("Şehir:" + currentCity);
         CityApiRequest cityApiRequest = new CityApiRequest(new CityApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
@@ -814,6 +827,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
                         // Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
                         Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
+                        System.out.println("foto yükleme 3");
 
                     }
 
@@ -824,10 +838,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 }
             }
         });
+        System.out.println("foto yükleme 4");
         cityApiRequest.execute(apiUrl, "GET", currentCity, accessToken);
     }
 
     private void saveImageToServer(File file) {
+        System.out.println("foto yükleme 1");
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
@@ -835,8 +851,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 .addFormDataPart("photo", currentPhotoName+".jpg",
                         RequestBody.create(MediaType.parse("image/*"), file))
                 .build();
+        System.out.println("foto yükleme başladı");
         Request request = new Request.Builder()
-                .url("http://192.168.1.54:4000/upload")
+                //.url(BASE_API_URL+"/upload")
+                .url("http://16.171.40.96/api/upload")
                 .post(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -959,6 +977,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
             }
         });
+
+        System.out.println("invoice Price: " + invoicePrice);
 
         if (invoicePrice == null) {
             //Toast.makeText(this, "OCR does not get any price!", Toast.LENGTH_SHORT).show();
