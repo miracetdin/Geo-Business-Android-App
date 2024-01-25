@@ -15,9 +15,6 @@ import com.example.geo_business.R;
 
 import java.util.ArrayList;
 
-
-
-
 public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public interface OnItemClickListener {
         void onItemClick(Plan plan);
@@ -29,8 +26,6 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.onItemClickListener = listener;
     }
 
-
-
     private ArrayList<Plan> planList;
     private Context planContext;
 
@@ -41,12 +36,9 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public PlanViewHolder(View view) {
             super(view);
 
-            Log.d("plan deneme", "plan PlanViewHolder");
-
             this.employeeUsername = view.findViewById(R.id.plan_tv_employeeUsername);
             this.travelDate = view.findViewById(R.id.plan_tv_travelDate);
             this.endLocation = view.findViewById(R.id.plan_tv_endLocation);
-            // this.accountantUsername = view.findViewById(R.id.plan_tv_accountantUsername);
         }
     }
 
@@ -67,17 +59,10 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Plan plan = planList.get(position);
 
-        Log.d("plan deneme", "plan onBindViewHolder");
-        Log.d("plan deneme", String.valueOf(position));
-
         if (plan != null) {
             ((PlanViewHolder) holder).employeeUsername.setText("Username: " + plan.getEmployeeUsername());
             ((PlanViewHolder) holder).travelDate.setText("Travel Date: " + plan.getTravelDate());
             ((PlanViewHolder) holder).endLocation.setText("End Location: " + plan.getEndLocation());
-
-            // Plan.Coordinates coordinates = plan.getCoordinates();
-
-            //((PlanViewHolder) holder).accountantUsername.setText(plan.getAccountantUsername());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,8 +76,6 @@ public class PlanAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void updateData(ArrayList<Plan> newPlanList) {
-
-        Log.d("plan deneme", "plan liste güncelle");
         planList.clear();
         planList.addAll(newPlanList);
         notifyDataSetChanged();

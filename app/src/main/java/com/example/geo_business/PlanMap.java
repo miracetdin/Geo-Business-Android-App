@@ -140,7 +140,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Lokasyon talebi (request) ve callback'i başlat
+        // Lokasyon talebi ve callbacki başlat
         locationRequest = new LocationRequest();
         locationRequest.setInterval(5000); // Lokasyonu her 5 saniyede bir güncelle
         locationRequest.setFastestInterval(5000);
@@ -152,7 +152,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 if (locationResult != null) {
                     Location location = locationResult.getLastLocation();
                     if (location != null) {
-                        // Güncellenmiş lokasyonu burada işleyin
+                        // Güncellenmiş lokasyon
                         updateCurrentLocation(location);
                     }
                 }
@@ -190,10 +190,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                     // Kullanıcı dairenin içinde
                     Toast.makeText(PlanMap.this, "Take a invoice photo!", Toast.LENGTH_SHORT).show();
                     isTravelStarted = false;
-                    // startButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
-                    // info.setVisibility(View.INVISIBLE);
-
                     okButton.setVisibility(View.VISIBLE);
                     retakeButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
@@ -236,20 +233,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         curLong = location.getLongitude();
 
         currentLocation = new LatLng(curLat, curLong);
-
-        // Haritayı güncelleyin veya yeni lokasyonla diğer işlemleri gerçekleştirin
-        // ...
-
-        /*
-        LatLng latLng = new LatLng(curLat, curLong);
-
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(14).build();
-
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.addMarker(new MarkerOptions().position(latLng)
-                .icon(setIcon(Map.this, R.drawable.baseline_register_circle_24)));
-
-         */
     }
 
     @Override
@@ -264,60 +247,12 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         map.setMyLocationEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
 
-        //fetchMyLocation();
-        //setDestinationLocation();
-
-        // fetchMyLocation fonksiyonunu asenkron olarak çağırın
         fetchMyLocation(new LocationCallback() {
             @Override
             public void onLocationFetched(Location location) {
-                // fetchMyLocation tamamlandığında yapılacak işlemler
-
-                // setDestinationLocation fonksiyonunu çağırın
                 setDestinationLocation();
             }
         });
-
-
-
-
-        /*
-
-        LatLng latLng = new LatLng(Double.parseDouble(plan.getCoordinates().getLatitude()), Double.parseDouble(plan.getCoordinates().getLongtitude()));
-        // LatLng latLng = (LatLng) (plan.getCoordinates().getLatitude() + ", " + plan.getCoordinates().getLongtitude());
-
-        Log.d("latLng kontrol", latLng.toString());
-
-        destinationLocation = latLng;
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
-        map.addMarker(markerOptions);
-
-        getRoute(userLocation, destinationLocation);
-
-         */
-        /*
-
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                if(!isTravelStarted) {
-                    map.clear();
-                    destinationLocation = latLng;
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
-                    map.addMarker(markerOptions);
-
-                    getRoute(userLocation, destinationLocation);
-                }
-            }
-        });
-
-         */
-
-
     }
 
     public void setDestinationLocation() {
@@ -328,11 +263,8 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         if (latitude != null && longitude != null) {
             LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
 
-            Log.d("latLng kontrol", latLng.toString());
-
             destinationLocation = latLng;
 
-            Log.d("destinationLocation kontrol", destinationLocation.toString());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             markerOptions.icon(setIcon(PlanMap.this, R.drawable.lock_black_24dp));
@@ -340,12 +272,10 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
             getRoute(userLocation, destinationLocation);
 
-
             // 100 metre yarıçaplı bir daire çiz
             drawDestinationCircle(destinationLocation, 100);
         } else {
             Log.e("LatLng Conversion", "Invalid latitude or longitude values in the plan.");
-            // Handle the case where latitude or longitude is null
         }
 
     }
@@ -359,15 +289,12 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             Log.d("destination boş", "evet");
         }
 
-
-
         String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw"; // Replace with your Google Maps API Key
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                 origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
                 "&mode=driving&key=" + apiKey;
 
-        // For simplicity, you can use AsyncTask for demonstration purposes
         new PlanMap.FetchDirectionsTask().execute(url);
     }
 
@@ -381,7 +308,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 .radius(radius)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(2)
-                .fillColor(Color.argb(70, 0, 0, 255)); // Yarı saydam mavi renkte bir dolgu
+                .fillColor(Color.argb(70, 0, 0, 255));
 
         destinationCircle = map.addCircle(circleOptions);
     }
@@ -400,15 +327,9 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         return distance[0] <= circleRadius;
     }
 
-
-
     private class FetchDirectionsTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            // Use a networking library (e.g., Retrofit, Volley) to make the API request
-            // and obtain the JSON response from the Directions API
-
-            // For simplicity, we'll use a basic HttpURLConnection here
             try {
                 URL url = new URL(params[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -432,8 +353,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(String result) {
-            // Parse the JSON response to obtain the polyline points
-            // Draw the polyline on the map
 
             // JSON yanıtını çözümle
             JSONObject jsonResponse = null;
@@ -442,8 +361,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
-            Log.d("Konum api response:", jsonResponse.toString());
 
             // "routes" dizisinden ilk rota al
             JSONArray routesArray = null;
@@ -488,12 +405,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
-            // Başlangıç noktasını kullanarak bir şeyler yapabilirsiniz
-            // Örneğin, bir Toast mesajı göstermek:
-            //Toast.makeText(PlanMap.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
-            Log.d("Başlangıç Şehri:", startAddress);
             String city = extractCity(startAddress);
-            System.out.println("Şehir: " + city);
             currentCity = city;
             startLocation = startAddress;
             endLocation = endAddress;
@@ -514,12 +426,9 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
-            // Toast mesajını oluştur ve göster
             String toastMessage = "Distance: " + distanceText;
             Toast.makeText(PlanMap.this, toastMessage, Toast.LENGTH_SHORT).show();
             info.setText("Distance: " + distanceText);
-
-            // String distanceText = "10.6 km";
 
             // Sayısal değeri çıkarmak için regex
             String regex = "[0-9]+\\.*[0-9]*";
@@ -528,7 +437,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
 
             // Eşleşen değeri bulma
             if (matcher.find()) {
-                String matchedValue = matcher.group(); // Eşleşen tam sayısal değeri içerir
+                String matchedValue = matcher.group();
                 System.out.println("Distance: " + matchedValue);
 
                 if(distanceText.contains("km")) {
@@ -549,29 +458,19 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private static String extractCity(String address) {
-        // Örnek regex deseni
         //Pattern pattern = Pattern.compile("(\\w+/\\w+),");
         //Pattern pattern = Pattern.compile("\\b(\\p{L}+)/\\p{L}+\\b");
         Pattern pattern = Pattern.compile("(\\p{L}+)/(\\p{L}+),.*");
         Matcher matcher = pattern.matcher(address);
 
         if (matcher.find()) {
-            // İlk eşleşen kısmı al
-            //String cityPart = matcher.group(1);
-
-            // / işaretine göre bölerek şehir ismini al
-            //String[] parts = cityPart.split("/");
-            //if (parts.length > 1) {
-            //    return parts[2].trim();
-            //}
-
             // Eşleşen kısımları alarak şehir ve ilçe/ülke bilgisini çıkar
             String cityPart = matcher.group(2);
 
             return cityPart.trim();
         }
 
-        return null; // Eşleşme bulunamazsa null döndürülebilir
+        return null;
     }
 
     private void drawPolylineOnMap(String result) {
@@ -671,11 +570,9 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED) {
-            Log.d("Kamera" , "İzin alındı");
             dispatchTakePictureIntent();
         }
         else {
-            Log.d("Kamera" , "İzin alınamadıdı");
             ActivityCompat.requestPermissions(this, permissions, CAMERA_PERM_CODE);
         }
 
@@ -695,25 +592,20 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void dispatchTakePictureIntent() {
-        Log.d("Kamera", "1");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.d("Kamera", "2");
         File photoFile = null;
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             photoFile = null;
 
             try {
-                Log.d("Kamera", "3");
                 photoFile = createImageFile();
             } catch (IOException exception) {
                 Toast.makeText(this, "Photo file could not be created!", Toast.LENGTH_SHORT).show();
             }
 
             if (photoFile != null) {
-                Log.d("Kamera", "4");
                 Uri photoUri = FileProvider.getUriForFile(this, "com.example.geo_business", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                Log.d("Kamera", "5");
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
             }
         }
@@ -748,7 +640,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         copyTessData();
         // Initialize Tesseract API
         TessBaseAPI tessBaseAPI = new TessBaseAPI();
-        tessBaseAPI.init(getFilesDir().getPath(), "tur"); // You may need to replace "eng" with the appropriate language code
+        tessBaseAPI.init(getFilesDir().getPath(), "tur");
 
         BitmapFactory.Options options = new BitmapFactory.Options();
 
@@ -787,13 +679,8 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         // Get the recognized text
         String recognizedText = tessBaseAPI.getUTF8Text();
 
-        // Display or process the recognized text as needed
+        // Process the recognized text
         if (!TextUtils.isEmpty(recognizedText)) {
-            // Do something with the recognized text, for example, display it in a TextView
-            //Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
-            Log.d("OCR Result: ", recognizedText);
-
-            // String exampleText = "Tutar 10, Top 20.50, Toplam: 30.75, Tutar: 10.55, Top: *10.55";
 
             // Fatura fiyatını tespit etmek için regex
             String regex = "(?i)(?:Tutar|Top|Toplam)\\s*(?::|)\\s*[*]*\\s*([\\d,.]+)";
@@ -803,25 +690,20 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             // Eşleşen değerleri bulma
             while (matcher.find()) {
                 String matchedValue = matcher.group(1); // Grup 1, sayısal değeri içerir
-                // Burada matchedValue değerini kullanabilirsiniz
-                System.out.println("Fatura Fiyatı: " + matchedValue);
                 invoicePrice = Float.valueOf(matchedValue);
             }
 
             getCity();
             saveImageToServer(new File(currentPhotoPath));
-            // setTravelData();
-            // You can also use recognizedText for further processing or store it in a variable.
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
-            Log.d("OCR Result: ", "OCR failed. No text recognized.");
         }
 
         // End the OCR processing
         tessBaseAPI.end();
     }
 
-    // Bitmap'ı istediğiniz açıda döndüren fonksiyon
+    // Bitmapi döndüren fonksiyon
     private Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
@@ -866,7 +748,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
         Log.e(TAG, "Access Token: " + accessToken);
-        // String city = "Adana";
 
         // API request
         String apiUrl = ApiConfig.BASE_API_URL + "/fee/" + currentCity;
@@ -898,9 +779,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                             priceEstimate = Float.valueOf(shortDistance);
                         }
 
-                        // Toast.makeText(PlanMap.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
-                        Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
-
                     }
 
                 } catch (JSONException e) {
@@ -914,11 +792,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void saveImageToServer(File file) {
-        // File'ı sunucuya gönderme işlemini gerçekleştirebilirsiniz.
-        // Burada HttpClient, Retrofit, veya diğer HTTP kütüphanelerini kullanabilirsiniz.
-        // Örnek bir HTTP POST request kullanımı:
-
-        Log.d("Kayıt", "1");
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
@@ -926,19 +799,18 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                 .addFormDataPart("photo", currentPhotoName+".jpg",
                         RequestBody.create(MediaType.parse("image/*"), file))
                 .build();
-        Log.d("Kayıt", "2");
+
         Request request = new Request.Builder()
                 .url(BASE_API_URL+"/upload")
                 .post(requestBody)
                 .build();
-        Log.d("Kayıt", "3");
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    // Sunucu yanıtını burada işleyebilirsiniz.
+                    // Sunucu yanıtı
                     String responseData = response.body().string();
-                    Log.d("Server Response", responseData);
 
                     // Assuming `responseData` contains the JSON response
                     try {
@@ -971,10 +843,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         LocalDate today = LocalDate.now();
         // Tarih formatını belirle
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        // Tarihi metin olarak temsil eden bir String
-        //String dateString = "12/23/2023";
-        // String'i LocalDate nesnesine çevir
-        //LocalDate travelDate = LocalDate.parse(dateString, formatter);
         // Tarihi belirlenen formata çevir
         String travelDate = today.format(formatter);
 
@@ -993,23 +861,17 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         String invoicePhoto = photoLink;
         String invoiceInfo = travelDistance;
 
-
         String status = (suspicious.equals("yes") ? "rejected" : "approved");
         String approveByAccountant = "System";
         String approveDate = travelDate;
-
 
         Travel travel = new Travel(
                 employeeUsername, travelDate.toString(), startLocation, endLocation, invoicePhoto, invoiceInfo+" km",
                 "note", invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate
         );
 
-        Log.d("test", travel.toString());
-
         Gson gson = new Gson();
         String body =  gson.toJson(travel);
-
-        Log.d("body içerik: ", body);
 
         // create JSON Object with username and password
         JSONObject jsonParams = new JSONObject();
@@ -1024,16 +886,12 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onTaskComplete(String result) {
 
-                System.out.println("kayıt işlemi başarılı");
-                Log.d(TAG, "API Response: " + result);
-
                 if(result == null) {
                     Toast.makeText(PlanMap.this, "Registration failed!", Toast.LENGTH_SHORT).show();
                     dispatchTakePictureIntent();
                 }
 
                 if(result != null && result.contains("saved")) {
-                    System.out.println("silme işlemine başladı");
                     String apiUrl = ApiConfig.BASE_API_URL;
                     String[] tokens = TokenData.getInstance().getSharedData();
                     String accessToken = tokens[0];
@@ -1045,10 +903,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
                     DeletePlanApiRequest deleteRequest = new DeletePlanApiRequest(new DeletePlanApiRequest.ApiCallback() {
                         @Override
                         public void onTaskComplete(String result) {
-                            // API isteği tamamlandığında burada işlemler yapabilirsiniz
-                            System.out.println("silme işlemi başarılı");
-                            System.out.println("Result: " + result);
-
                             Intent intent = new Intent(getApplicationContext(), Menu.class);
                             startActivity(intent);
                         }
@@ -1083,9 +937,6 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        // createTravelApiRequest.execute(apiUrl, body, accessToken);
-
-
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {
@@ -1096,7 +947,5 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
         drawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
-
-
 
 }

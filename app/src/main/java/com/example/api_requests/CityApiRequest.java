@@ -29,21 +29,15 @@ public class CityApiRequest extends AsyncTask<String, Void, String> {
         String apiUrl = params[0];
         String requestMethod = params[1];
 
-        // Parametreler ve başlıklar için Map nesnelerini oluştur
+        // Parameters ve Headers için Map nesnelerini oluştur
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("city", params[2]);
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Authorization", params[3]);
 
-        Log.e(TAG, "City: " + params[2]);
-        Log.e(TAG, "requestParams: " + requestParams);
-        Log.e(TAG, "Access Token: " + params[3]);
-        Log.e(TAG, "requestHeaders: " + requestHeaders);
-
         try {
             URL url = new URL(apiUrl);
-
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             // İstek methodunu ayarla
@@ -53,7 +47,6 @@ public class CityApiRequest extends AsyncTask<String, Void, String> {
             for (Map.Entry<String, String> entry : requestHeaders.entrySet()) {
                 urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
             }
-
 
             // Sunucudan gelen cevabı al
             int responseCode = urlConnection.getResponseCode();

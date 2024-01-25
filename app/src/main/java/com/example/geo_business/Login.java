@@ -22,9 +22,8 @@ import org.json.JSONObject;
 
 public class Login extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-
     EditText username, password;
-    Button login, register;
+    Button login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,6 @@ public class Login extends AppCompatActivity {
         password = (EditText) findViewById(R.id.login_et_password);
 
         login = (Button) findViewById(R.id.login_bt_login);
-        //register = (Button) findViewById(R.id.login_bt_register);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,17 +41,6 @@ public class Login extends AppCompatActivity {
                 loginFunc();
             }
         });
-
-        /*
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
-                startActivity(intent);
-            }
-        });
-
-         */
     }
 
     public void loginFunc() {

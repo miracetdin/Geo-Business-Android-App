@@ -49,8 +49,6 @@ public class Travels extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travels);
 
-
-
         TravelAdapter adapter = new TravelAdapter(travelList, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.travel_recycler_view);
@@ -65,14 +63,6 @@ public class Travels extends AppCompatActivity {
     public void viewTravels(TravelAdapter adapter) {
         // create JSON Object with username and password
         JSONObject jsonParams = new JSONObject();
-
-        // Map<String, String> params = new HashMap<>();
-        // params.put("page", page);
-
-        // Map<String, String> headers = new HashMap<>();
-        // headers.put("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g");
-
-        // String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjU4NWI1ZTE2NmYzN2NjMjMxOGNhN2JhIiwicm9sZSI6ImVtcGxveWVlIiwiaWF0IjoxNzA0MTMzMTE2LCJleHAiOjE3MDQ5OTcxMTYsImlzcyI6Imdlby1idXNpbmVzcy10cmF2ZWwtbW9kdWxlLmFwcCJ9.WeIiGywN9aoGYfkuKyq0dJKK6ztK4nld84kLg20TE6g";
 
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
@@ -101,10 +91,6 @@ public class Travels extends AppCompatActivity {
                             JSONObject jsonObject = jsonResponse.getJSONObject(i);
                             Log.d(TAG, "jsonResponse(i): " + jsonResponse.getJSONObject(i));
 
-
-
-
-                            // Accessing the fields in the JSON object and assigning them to the class properties
                             id = jsonObject.getString("_id");
                             username = jsonObject.getString("employeeUsername");
                             travelDate = jsonObject.getString("travelDate");
@@ -117,17 +103,13 @@ public class Travels extends AppCompatActivity {
                             approveByAccountant = jsonObject.getString("approveByAccountant");
                             approveDate = jsonObject.getString("approveDate");
 
-                            // Assuming invoicePhoto is an integer in the JSON, adjust if it's different
                             invoicePhoto = jsonObject.getString("invoicePhoto");
 
-                            // Assuming invoicePrice and priceEstimate are floats in the JSON, adjust if they are different
                             invoicePrice = (float) jsonObject.getDouble("invoicePrice");
                             priceEstimate = (float) jsonObject.getDouble("priceEstimate");
 
                             Log.d(TAG, "startLocation: " + startLocation);
 
-                            // Now, you have assigned values to the class properties for each JSON object in the array
-                            // You can use these values as needed
                             travelList.add(new Travel(id, username, travelDate, startLocation, endLocation, invoicePhoto,
                                     invoiceInfo, invoiceNote, invoicePrice, priceEstimate, suspicious, status,
                                     approveByAccountant, approveDate));

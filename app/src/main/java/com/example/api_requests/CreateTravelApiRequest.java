@@ -35,14 +35,14 @@ public class CreateTravelApiRequest extends AsyncTask<String, Void, String> {
             URL url = new URL(apiUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            // İstek methodunu ayarla (POST)
+            // İstek methodunu ayarla
             urlConnection.setRequestMethod("POST");
 
-            // Başlıkları ayarla
+            // Headers ayarla
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Authorization", accessToken);
 
-            // POST isteği için istek body'sini ayarla
+            // POST isteği için request bodysini ayarla
             urlConnection.setDoOutput(true);
             try (DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream())) {
                 wr.write(requestBody.getBytes(StandardCharsets.UTF_8));

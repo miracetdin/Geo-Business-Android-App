@@ -33,7 +33,6 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
     public static ArrayList<Plan> planList = new ArrayList<>();
     private static final String TAG = "PlansActivity";
     private static final String page = "1";
-
     private String id, employeeUsername, travelDate, endLocation, accountantUsername;
     private Float latitude, longitude;
 
@@ -52,8 +51,7 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(this); // 'this' aktiviteniz veya fragmentiniz ise
-
+        adapter.setOnItemClickListener(this);
 
         viewPlans(adapter);
     }
@@ -66,7 +64,6 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
 
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
-        Log.e(TAG, "Access Token: " + accessToken);
 
         String apiUrl = ApiConfig.BASE_API_URL + "/plan/?page=1";  // Update the base URL accordingly
 
@@ -83,17 +80,14 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
                     Log.d(TAG, "jsonResponse: " + jsonResponse);
                     Log.d(TAG, "jsonResponseLength: " + jsonResponse.length());
 
-                    // Clear the existing data before adding new data
                     planList.clear();
 
                     for (int i = 0; i < jsonResponse.length(); i++) {
                         try {
                             JSONObject jsonObject = jsonResponse.getJSONObject(i);
-                            Log.d(TAG, "jsonResponse(i): " + jsonResponse.getJSONObject(i));
 
                             // Accessing the fields in the JSON object and assigning them to the class properties
                             id = jsonObject.getString("_id");
-                            Log.d("PLAN ID", id);
                             employeeUsername = jsonObject.getString("employeeUsername");
                             travelDate = jsonObject.getString("travelDate");
                             endLocation = jsonObject.getString("endLocation");
@@ -106,8 +100,6 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
 
                             String coordinates = String.valueOf(latitude) + ", " + String.valueOf(longitude);
 
-                            // Now, you have assigned values to the class properties for each JSON object in the array
-                            // You can use these values as needed
                             planList.add(new Plan(id, employeeUsername, travelDate, endLocation, new Plan.Coordinates(String.valueOf(latitude), String.valueOf(longitude)), accountantUsername));
                             if(planList.size() == 0) {
                                 Log.d("plan list", "boş");
@@ -144,9 +136,8 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
 
     @Override
     public void onItemClick(Plan plan) {
-        // Tıklanan öğenin değerlerini burada günlüğe kaydedin
+        // Tıklanan öğenin değerlerini burada günlüğe kaydet
         Log.d("Tıklanan Plan", plan.toString());
-        // Diğer ihtiyaç duyulan işlemleri gerçekleştirin
 
         // Şu anki tarihi al
         Date date = new Date();
@@ -172,9 +163,6 @@ public class Plans extends AppCompatActivity implements PlanAdapter.OnItemClickL
             Toast.makeText(this, "Bu işlem yalnızca uygun tarihte gerçekleştirilebilir.", Toast.LENGTH_SHORT).show();
         }
 
-
     }
-
-
 
 }

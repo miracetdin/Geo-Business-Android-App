@@ -44,7 +44,6 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Menu.class);
                 startActivity(intent);
-                //Toast.makeText(Profile.this, "TRACELS SAYFA", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -31,6 +31,7 @@
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_providers_path"/>
 
@@ -39,7 +40,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw" />
-
 
         <activity
             android:name=".Login"

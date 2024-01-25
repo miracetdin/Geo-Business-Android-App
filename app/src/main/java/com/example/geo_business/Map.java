@@ -139,7 +139,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Lokasyon talebi (request) ve callback'i başlat
+        // Lokasyon talebi (request) ve callback
         locationRequest = new LocationRequest();
         locationRequest.setInterval(5000); // Lokasyonu her 5 saniyede bir güncelle
         locationRequest.setFastestInterval(5000);
@@ -151,7 +151,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 if (locationResult != null) {
                     Location location = locationResult.getLastLocation();
                     if (location != null) {
-                        // Güncellenmiş lokasyonu burada işleyin
+                        // Güncellenmiş lokasyon
                         updateCurrentLocation(location);
                     }
                 }
@@ -182,18 +182,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // isUserInsideCircle metodunu kullanarak kontrol yap
+                //  Kullanıcı hedef lokasyonda mı
                 Boolean inside =  isUserInsideCircle(currentLocation, destinationLocation, 100);
 
                 if (inside) {
                     // Kullanıcı dairenin içinde
                     Toast.makeText(Map.this, "Take a invoice photo", Toast.LENGTH_SHORT).show();
                     isTravelStarted = false;
-                    //startButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
-                    //info.setVisibility(View.INVISIBLE);
-
-
                     okButton.setVisibility(View.VISIBLE);
                     retakeButton.setVisibility(View.VISIBLE);
                     endButton.setVisibility(View.INVISIBLE);
@@ -230,26 +226,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
 
-    // Güncellenmiş lokasyonu işlemek için metod
+    // Güncellenmiş lokasyonu işleme
     private void updateCurrentLocation(Location location) {
         curLat = location.getLatitude();
         curLong = location.getLongitude();
 
         currentLocation = new LatLng(curLat, curLong);
-
-        // Haritayı güncelleyin veya yeni lokasyonla diğer işlemleri gerçekleştirin
-        // ...
-
-        /*
-        LatLng latLng = new LatLng(curLat, curLong);
-
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(14).build();
-
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.addMarker(new MarkerOptions().position(latLng)
-                .icon(setIcon(Map.this, R.drawable.baseline_register_circle_24)));
-
-         */
     }
 
     @Override
@@ -288,16 +270,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void getRoute(LatLng origin, LatLng destination) {
-        String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw"; // Replace with your Google Maps API Key
+        String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                 origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
                 "&mode=driving&key=" + apiKey;
 
-        // Use a networking library or AsyncTask to make the API request
-        // and parse the response to get route details (polyline points)
-
-        // For simplicity, you can use AsyncTask for demonstration purposes
         new FetchDirectionsTask().execute(url);
     }
 
@@ -311,7 +289,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 .radius(radius)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(2)
-                .fillColor(Color.argb(70, 0, 0, 255)); // Yarı saydam mavi renkte bir dolgu
+                .fillColor(Color.argb(70, 0, 0, 255));
 
         destinationCircle = map.addCircle(circleOptions);
     }
@@ -334,10 +312,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     private class FetchDirectionsTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            // Use a networking library (e.g., Retrofit, Volley) to make the API request
-            // and obtain the JSON response from the Directions API
-
-            // For simplicity, we'll use a basic HttpURLConnection here
             try {
                 URL url = new URL(params[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -361,9 +335,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(String result) {
-            // Parse the JSON response to obtain the polyline points
-            // Draw the polyline on the map
-
             // JSON yanıtını çözümle
             JSONObject jsonResponse = null;
             try {
@@ -371,8 +342,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
-            Log.d("Konum api response:", jsonResponse.toString());
 
             // "routes" dizisinden ilk rota al
             JSONArray routesArray = null;
@@ -417,10 +386,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 throw new RuntimeException(e);
             }
 
-            //Toast.makeText(Map.this, "Başlangıç Şehri: " + startAddress, Toast.LENGTH_SHORT).show();
-            Log.d("Başlangıç Şehri:", startAddress);
             String city = extractCity(startAddress);
-            System.out.println("Şehir: " + city);
             currentCity = city;
             startLocation = startAddress;
             endLocation = endAddress;
@@ -453,10 +419,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
             // Eşleşen değeri bulma
             if (matcher.find()) {
-                String matchedValue = matcher.group(); // Eşleşen tam sayısal değeri içerir
+                String matchedValue = matcher.group();
                 System.out.println("Distance: " + matchedValue);
 
-
+                // km-m dönüştür
                 if(distanceText.contains("km")) {
                     System.out.println("ok");;
                 }
@@ -465,18 +431,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 }
 
                 Toast.makeText(Map.this, matchedValue+" Km", Toast.LENGTH_SHORT).show();
-
-
-
-                /*
-                if (distanceText.contains(" m ")) {
-                    distanceText = String.valueOf(Float.valueOf(distanceText) / 100.0F);
-                }
-
-                 */
-
-
-
 
                 travelDistance = matchedValue;
             }
@@ -487,22 +441,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private static String extractCity(String address) {
-        // Örnek regex deseni
         //Pattern pattern = Pattern.compile("(\\w+/\\w+),");
         //Pattern pattern = Pattern.compile("\\b(\\p{L}+)/\\p{L}+\\b");
         Pattern pattern = Pattern.compile("(\\p{L}+)/(\\p{L}+),.*");
         Matcher matcher = pattern.matcher(address);
 
         if (matcher.find()) {
-            // İlk eşleşen kısmı al
-            //String cityPart = matcher.group(1);
-
-            // / işaretine göre bölerek şehir ismini al
-            //String[] parts = cityPart.split("/");
-            //if (parts.length > 1) {
-            //    return parts[2].trim();
-            //}
-
             // Eşleşen kısımları alarak şehir ve ilçe/ülke bilgisini çıkar
             String cityPart = matcher.group(2);
 
@@ -607,11 +551,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this.getApplicationContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED) {
-            Log.d("Kamera" , "İzin alındı");
             dispatchTakePictureIntent();
         }
         else {
-            Log.d("Kamera" , "İzin alınamadıdı");
             ActivityCompat.requestPermissions(this, permissions, CAMERA_PERM_CODE);
         }
 
@@ -631,25 +573,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void dispatchTakePictureIntent() {
-        Log.d("Kamera", "1");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.d("Kamera", "2");
         File photoFile = null;
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             photoFile = null;
 
             try {
-                Log.d("Kamera", "3");
                 photoFile = createImageFile();
             } catch (IOException exception) {
                 Toast.makeText(this, "Photo file could not be created!", Toast.LENGTH_SHORT).show();
             }
 
             if (photoFile != null) {
-                Log.d("Kamera", "4");
                 Uri photoUri = FileProvider.getUriForFile(this, "com.example.geo_business", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                Log.d("Kamera", "5");
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
             }
         }
@@ -686,6 +623,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         // Initialize Tesseract API
         TessBaseAPI tessBaseAPI = new TessBaseAPI();
         tessBaseAPI.init(getFilesDir().getPath(), "tur");
+
         // Set the image for OCR processing
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -714,19 +652,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         Bitmap bitmap = null;
         bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
 
-        Log.d("ocr", "başarılı");
-
         // tessBaseAPI.setImage(bitmap);
         tessBaseAPI.setImage(rotateBitmap(bitmap, 90));
 
         // Get the recognized text
         String recognizedText = tessBaseAPI.getUTF8Text();
 
-        // Display or process the recognized text as needed
+        // process the recognized text
         if (!TextUtils.isEmpty(recognizedText)) {
-            //Toast.makeText(this, "OCR Result: " + recognizedText, Toast.LENGTH_LONG).show();
-            Log.d("OCR Result: ", recognizedText);
-
             // Fatura fiyatını tespit etmek için regex
             String regex = "(?i)(?:Tutar|Top|Toplam)\\s*(?::|)\\s*[*]*\\s*([\\d,.]+)";
             Pattern pattern = Pattern.compile(regex);
@@ -735,23 +668,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             // Eşleşen değerleri bulma
             while (matcher.find()) {
                 String matchedValue = matcher.group(1); // Grup 1, sayısal değeri içerir
-                System.out.println("Fatura Fiyatı: " + matchedValue);
                 invoicePrice = Float.valueOf(matchedValue);
             }
 
             getCity();
-            System.out.println("foto yükleme 3");
             saveImageToServer(new File(currentPhotoPath));
         } else {
             Toast.makeText(this, "OCR failed. No text recognized.", Toast.LENGTH_SHORT).show();
-            Log.d("OCR Result: ", "OCR failed. No text recognized.");
         }
 
         // End the OCR processing
         tessBaseAPI.end();
     }
 
-    // Bitmap'ı istediğiniz açıda döndüren fonksiyon
+    // Bitmap'ı x açı döndürme
     private Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
@@ -792,22 +722,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     public void getCity() {
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
-        Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
         String apiUrl = ApiConfig.BASE_API_URL + "/fee/" + currentCity;
-        System.out.println("Şehir:" + currentCity);
         CityApiRequest cityApiRequest = new CityApiRequest(new CityApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
-
-                Log.d(TAG, "API Response: " + result);
-
                 try {
                     // Transform JSON response to JSON Array
                     JSONObject jsonResponse = new JSONObject(result);
-                    Log.d(TAG, "jsonResponse: " + jsonResponse);
-                    Log.d(TAG, "jsonResponseLength: " + jsonResponse.length());
 
                     if (jsonResponse.has("error")) {
                         // Login error
@@ -825,10 +748,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                             priceEstimate = Float.valueOf(shortDistance);
                         }
 
-                        // Toast.makeText(Map.this, "Welcome "+city+" "+openingFee+" "+feePerKm, Toast.LENGTH_SHORT).show();
-                        Log.d("City API", "Welcome "+city+" "+openingFee+" "+feePerKm);
-                        System.out.println("foto yükleme 2");
-
                     }
 
                 } catch (JSONException e) {
@@ -838,22 +757,19 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 }
             }
         });
-        System.out.println("foto yükleme 1");
+
         cityApiRequest.execute(apiUrl, "GET", currentCity, accessToken);
     }
 
     private void saveImageToServer(File file) {
-        System.out.println("foto yükleme 4");
-
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("photo", currentPhotoName+".jpg",
                         RequestBody.create(MediaType.parse("image/*"), file))
                 .build();
-        System.out.println("foto yükleme başladı");
+
         Request request = new Request.Builder()
-                //.url(BASE_API_URL+"/upload")
                 .url(BASE_API_URL+"/upload")
                 .post(requestBody)
                 .build();
@@ -861,26 +777,19 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    System.out.println("foto kayıt işlemi başarılı");
                     String responseData = response.body().string();
-                    Log.d("Server Response", responseData);
 
                     // Assuming `responseData` contains the JSON response
                     try {
                         JSONObject json = new JSONObject(responseData);
                         photoLink = json.getString("fileLink");
-                        Log.d("Server Response", "File Link: " + photoLink);
 
                         setTravelData();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("Server Response", "Error parsing JSON: " + e.getMessage());
                     }
                 }
-                else {
-                    System.out.println("foto kayıt işlemi başarılı değil");
-                    System.out.println(response.code());
-                }
+
             }
 
             @Override
@@ -924,16 +833,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 "note", invoicePrice, priceEstimate, suspicious, status, approveByAccountant, approveDate
         );
 
-        Log.d("test", travel.toString());
-
         Gson gson = new Gson();
         String body =  gson.toJson(travel);
 
-        Log.d("body içerik: ", body);
-
         String[] tokens = TokenData.getInstance().getSharedData();
         String accessToken = tokens[0];
-        Log.e(TAG, "Access Token: " + accessToken);
 
         // API request
         String apiUrl = ApiConfig.BASE_API_URL + "/travel/";
@@ -941,58 +845,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         CreateTravelApiRequest createTravelApiRequest = new CreateTravelApiRequest(new CreateTravelApiRequest.ApiCallback() {
             @Override
             public void onTaskComplete(String result) {
-                Log.d(TAG, "API Response: " + result);
 
                 if(result == null) {
                     Toast.makeText(Map.this, "The save operation failed!", Toast.LENGTH_SHORT).show();
                     dispatchTakePictureIntent();
                 }
-                /*
-                else {
-
-                    info.setVisibility(View.VISIBLE);
-                    info.setText("Invoice Price: " + invoicePrice.toString() + " TL");
-
-                    okButton.setVisibility(View.VISIBLE);
-                    retakeButton.setVisibility(View.VISIBLE);
-                    endButton.setVisibility(View.INVISIBLE);
-                    startButton.setVisibility(View.INVISIBLE);
-
-                    retakeButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dispatchTakePictureIntent();
-                        }
-                    });
-
-                    okButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(getApplicationContext(), Menu.class);
-                            startActivity(intent);
-                        }
-                    });
-                }
-
-                 */
 
                 Intent intent = new Intent(getApplicationContext(), Menu.class);
                 startActivity(intent);
 
-
             }
         });
 
-        System.out.println("invoice Price: " + invoicePrice);
-
         if (invoicePrice == null) {
-            //Toast.makeText(this, "OCR does not get any price!", Toast.LENGTH_SHORT).show();
             dispatchTakePictureIntent();
         }
 
         info.setVisibility(View.VISIBLE);
         info.setText("Invoice Price: " + String.valueOf(invoicePrice) + " TL");
-
 
         retakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1008,7 +878,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        // createTravelApiRequest.execute(apiUrl, body, accessToken);
     }
 
     private BitmapDescriptor setIcon(Activity activity, int drawableId) {
