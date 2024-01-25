@@ -714,10 +714,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         Bitmap bitmap = null;
         bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
 
-        if(bitmap == null) {
-            dispatchTakePictureIntent();
-        }
-
         Log.d("ocr", "başarılı");
 
         // tessBaseAPI.setImage(bitmap);
