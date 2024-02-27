@@ -289,7 +289,7 @@ public class PlanMap extends AppCompatActivity implements OnMapReadyCallback {
             Log.d("destination boş", "evet");
         }
 
-        String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw"; // Replace with your Google Maps API Key
+        String apiKey = "api_key";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                 origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
