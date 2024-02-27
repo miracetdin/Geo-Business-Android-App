@@ -270,7 +270,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void getRoute(LatLng origin, LatLng destination) {
-        String apiKey = "AIzaSyDiA-6dALFcffd3sVMwzPCue0IFk4tB0uw";
+        String apiKey = "api_key";
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                 origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
